@@ -12,6 +12,7 @@
         xmlns:wpfCustomControlLibrary1="clr-namespace:WpfCustomControlLibrary1;assembly=WpfCustomControlLibrary1"
         xmlns:terminal11="clr-namespace:Terminal1;assembly=WpfTerminalControlLib"
         xmlns:powerShellShared2="clr-namespace:PowerShellShared;assembly=WpfTerminalControlLib"
+        xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
         mc:Ignorable="d"
         Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="900" Width="1200">
   <TabControl>
@@ -114,11 +115,11 @@
         </StackPanel>
 
 
-        <terminal11:WpfTerminalControl FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Black"
+        <wpfTerminalControlLib:WpfTerminalControl FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Black"
                                       BackgroundColor="White" AutoResize="True" Grid.Row="1" CursorBrush="DarkOrange"
                                       x:Name="Terminal"
                                       BorderBrush="Green" BorderThickness="1" Focusable="True" />
-        <powerShellShared2:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
+        <wpfTerminalControlLib:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
         <terminal11:WpfInputLine IsEnabled="False" LineMode="True" InputOnly="True" CursorBrush="Azure" x:Name="Input" BorderBrush="Red"
                                 BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True">
           <terminal11:WpfInputLine.CommandBindings>

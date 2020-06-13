@@ -8,11 +8,12 @@
              xmlns:powerShellShared="clr-namespace:PowerShellShared;assembly=WpfCustomControlLibrary1"
              xmlns:terminal11="clr-namespace:Terminal1;assembly=WpfTerminalControlLib"
              xmlns:powerShellShared1="clr-namespace:PowerShellShared;assembly=WpfTerminalControlLib"
+             xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
-  <terminal11:WpfTerminalControl AutoResize="True" x:Name="Terminal" CursorBrush="LawnGreen"/>
-  <powerShellShared1:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}"/>
+  <wpfTerminalControlLib:WpfTerminalControl AutoResize="True" x:Name="Terminal" CursorBrush="LawnGreen"/>
+  <wpfTerminalControlLib:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}"/>
   </Grid>
          
 

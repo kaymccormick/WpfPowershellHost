@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using NLog;
 using Terminal1;
 using WpfCustomControlLibrary1;
+using WpfTerminalControlLib;
 using ReadKeyOptions = System.Management.Automation.Host.ReadKeyOptions;
 
 // ReSharper disable once CheckNamespace

@@ -11,6 +11,7 @@ using System.Windows.Media.Media3D;
 using NLog;
 using Terminal1;
 using WpfCustomControlLibrary1;
+using WpfTerminalControlLib;
 using ReadKeyOptions = System.Management.Automation.Host.ReadKeyOptions;
 using Size = System.Management.Automation.Host.Size;
 

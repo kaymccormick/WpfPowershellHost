@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfCustomControlLibrary1"
              xmlns:terminal1="clr-namespace:Terminal1"
+             xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib"
              mc:Ignorable="d" FontSize="10"
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
@@ -20,55 +21,55 @@
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="0" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="1" AutoResize="True"  DiagnosticsEnabled="False" />
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="2" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="3" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="0" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="1" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="2" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="3" AutoResize="True"  DiagnosticsEnabled="False"/>
 
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="0" AutoResize="True" DiagnosticsEnabled="False" />
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="1" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="2" AutoResize="True"  DiagnosticsEnabled="False" />
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0"
                                   Grid.Column="3" AutoResize="True"   DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="0" AutoResize="True" DiagnosticsEnabled="False" />
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="1" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="2" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1"
                                   Grid.Column="3" AutoResize="True"  DiagnosticsEnabled="False"/>
 
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
                                   Grid.Column="0" AutoResize="True"  DiagnosticsEnabled="False" />
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
                                   Grid.Column="1" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
                                   Grid.Column="2" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="2"
                                   Grid.Column="3" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
                                   Grid.Column="0" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
                                   Grid.Column="1" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
                                   Grid.Column="2" AutoResize="True"  DiagnosticsEnabled="False"/>
-    <terminal1:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
+    <wpfTerminalControlLib:WpfTerminalControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="3"
                                   Grid.Column="3" AutoResize="True"  DiagnosticsEnabled="False"/>
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using NLog;
+using WpfTerminalControlLib;
 
 namespace Terminal1
 {

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Terminal1;
 using WpfCustomControlLibrary1.Annotations;
+using WpfTerminalControlLib;
 
 namespace WpfCustomControlLibrary1
 {

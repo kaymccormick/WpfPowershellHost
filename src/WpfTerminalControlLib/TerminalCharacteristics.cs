@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WpfTerminalControlLib;
 
 namespace Terminal1
 {

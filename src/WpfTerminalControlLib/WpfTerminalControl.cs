@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Media;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -18,11 +17,11 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using NLog;
+using Terminal1;
 using WpfCustomControlLibrary1.Annotations;
 
-namespace Terminal1
+namespace WpfTerminalControlLib
 {
     public class WpfTerminalControl : Control, INotifyPropertyChanged
     {
