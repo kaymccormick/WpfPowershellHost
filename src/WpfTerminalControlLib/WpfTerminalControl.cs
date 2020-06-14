@@ -665,7 +665,7 @@ namespace WpfTerminalControlLib
         {
             Brushes.Black, Brushes.DarkBlue, Brushes.DarkGreen, Brushes.DarkCyan, Brushes.DarkRed, Brushes.DarkMagenta,
             new SolidColorBrush(Color.FromArgb(0, 0x80, 0x80, 0)),
-            Brushes.Gray, Brushes.DarkGray, Brushes.Blue, Brushes.Green, Brushes.Cyan, Brushes.Red, Brushes.Magenta,
+            Brushes.Gray, Brushes.DarkGray, Brushes.Blue, Brushes.Lime, Brushes.Cyan, Brushes.Red, Brushes.Magenta,
             Brushes.Yellow, Brushes.White
         };
 
@@ -767,7 +767,7 @@ namespace WpfTerminalControlLib
         private void OnFontFamilyChanged(FontFamily eOldValue, FontFamily eNewValue)
         {
             Logger.Info(nameof(OnFontFamilyChanged));
-            Typeface1 = new Typeface(eNewValue.Source);
+            Typeface1 = new Typeface(eNewValue, FontStyle, FontWeight, FontStretch);
 
             if (!Typeface1.TryGetGlyphTypeface(out _glyphTypeface))
                 throw new InvalidControlState("Unable to get glyph typeface");

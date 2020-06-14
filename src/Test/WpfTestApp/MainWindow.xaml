@@ -587,11 +587,9 @@
         <TextBlock Text="{Binding CharUnderCursor}" />
       </StackPanel>
     </StackPanel>
-
-
     <wpfTerminalControlLib:WpfTerminalControl FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Green"
-                                              Background="Black"
-                                              BackgroundColor="Green" AutoResize="True" Grid.Row="2"
+                                              Background="Black" FontWeight="Bold"
+                                              BackgroundColor="Black" AutoResize="True" Grid.Row="2"
                                               CursorBrush="DarkOrange"
                                               x:Name="Terminal" FontFamily="Lucida Console"
                                               BorderBrush="Green" BorderThickness="1" Focusable="True" />
