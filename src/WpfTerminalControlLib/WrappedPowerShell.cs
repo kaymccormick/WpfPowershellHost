@@ -25,9 +25,6 @@ namespace WpfTerminalControlLib
     {
 
         private static Logger Logger = LogManager.GetCurrentClassLogger();
-        public string CallerFilePath { get ; }
-
-        public int CallerLineNumber { get ; }
 
         /// <summary>Signals the object that initialization is starting.</summary>
 
@@ -36,7 +33,6 @@ namespace WpfTerminalControlLib
 
         public static readonly RoutedEvent ShellChangedEvent ;
         private IAsyncResult _r1;
-        private InitialSessionState _iss;
 
         public static RoutedEvent InitialSessionStateChangedEvent = EventManager.RegisterRoutedEvent(
                                                                   "InitiailSessionStateChanged"
@@ -105,10 +101,11 @@ namespace WpfTerminalControlLib
             if (basevalue is PowerShell) return basevalue;
             var shell = PowerShell.Create();
             shell.Runspace = w.Runspace;
+            
             return shell;
         }
 
-        private static void OnShellChanged (
+        private static async void OnShellChanged (
             DependencyObject                   d
           , DependencyPropertyChangedEventArgs e
         )
@@ -120,6 +117,8 @@ namespace WpfTerminalControlLib
                                                                        ) ;
             var owner = ( WrappedPowerShell ) d ;
             owner.RaiseEvent ( ev ) ;
+
+            await owner.ExecuteHelperAsync("get-location", null);
         }
 
         public DateTime CreateDateTime { get ; set ; }
@@ -220,37 +219,6 @@ namespace WpfTerminalControlLib
             Host           = new Host (Terminal) ;
             //CoerceValue(InitialSessionStateProperty);
             if (Terminal != null) Terminal.TextEntryComplete += TerminalOnTextEntryComplete;
-            //InitialSessionState = InitialSessionState.CreateDefault();
-            // SessionStateVariableEntry var1 = new
-                // SessionStateVariableEntry("test1",
-                    // "MyVar1",
-                    // "Initial session state MyVar1 test");
-            // _iss.Variables.Add(var1);
-
-            // SessionStateVariableEntry var2 = new
-                // SessionStateVariableEntry("test2",
-                    // "MyVar2",
-                    // "Initial session state MyVar2 test");
-            // _iss.Variables.Add(var2);
-
-            // Runspace = RunspaceFactory.CreateRunspace ( Host ,InitialSessionState) ;
-            
-            // foreach (var acmd in InitialSessionState.Commands)
-            // ?{
-                
-                // if(acmd.CommandType == CommandTypes.Cmdlet)
-                // Debug.WriteLine(acmd.Name);
-                
-            // }
-            
-            //Host.DebuggerEnabled = true ;
-            // if ( Shell == null )
-            // {
-                // Debug.WriteLine("creating powershell from wrappedpowershell");
-                // Shell = PowerShell.Create ( ) ;
-                
-                // Shell.Runspace = Runspace;
-            // }
         }
 
         private async void TerminalOnTextEntryComplete(object sender, TextEntryCompleteArgs e)
@@ -294,7 +262,7 @@ namespace WpfTerminalControlLib
             try
             {
                 // execute the command with no input...
-                await executeHelper ( cmd , null ) ;
+                await ExecuteHelperAsync ( cmd , null ) ;
             }
             catch ( RuntimeException rte )
             {
@@ -311,7 +279,7 @@ namespace WpfTerminalControlLib
         /// <param name="cmd">The script to run</param>
         /// <param name="input">Any input arguments to pass to the script. If null
         /// then nothing is passed in.</param>
-        private async Task executeHelper ( string cmd , object input )
+        private async Task ExecuteHelperAsync ( string cmd , object input )
         {
             // Just ignore empty command lines...
             if ( string.IsNullOrEmpty ( cmd ) )

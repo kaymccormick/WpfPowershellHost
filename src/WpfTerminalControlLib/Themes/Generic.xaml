@@ -152,7 +152,7 @@
                 </Popup>
               </Grid>
               <Rectangle Name="FocusVisual" Grid.ColumnSpan="3"
-                         Stroke="DarkOrange" StrokeThickness="10"
+                         Stroke="Silver" StrokeThickness="3"
                          RadiusX="3" RadiusY="3"
                          Visibility="Collapsed" />
             </Grid>

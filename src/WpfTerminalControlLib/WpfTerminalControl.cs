@@ -31,7 +31,7 @@ namespace WpfTerminalControlLib
 
            public static readonly DependencyProperty AutoResizeProperty = DependencyProperty.Register(
             "AutoResize", typeof(bool), typeof(WpfTerminalControl),
-            new PropertyMetadata(default(bool), OnAutoResizeChanged));
+            new PropertyMetadata(true, OnAutoResizeChanged));
 
         public static readonly DependencyProperty CursorBrushProperty = DependencyProperty.Register(
             "CursorBrush", typeof(Brush), typeof(WpfTerminalControl), new PropertyMetadata(default(Brush)));
@@ -2171,7 +2171,6 @@ AddRowsToBuffer(CursorRow + 1);
 
             _drawingContext.Close();
 
-            Translate.X = DrawingGroup.Bounds.Left;
             var message =
                 $"( {DrawingGroup.Bounds.X:N2}, {DrawingGroup.Bounds.Y:N2} ) - ({DrawingGroup.Bounds.Right:N2}, {DrawingGroup.Bounds.Bottom:N2} )";
             Debug.WriteLine(message);
@@ -2180,10 +2179,14 @@ AddRowsToBuffer(CursorRow + 1);
                 ViewY += 1;
             }
 
-            Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
-            //Translate.Y = DrawingGroup.Bounds.Bottom;
-            TranslateX = Translate.X;
-            TranslateY = Translate.Y;
+            if (Translate != null)
+            {
+                Translate.X = DrawingGroup.Bounds.Left;
+                Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
+                //Translate.Y = DrawingGroup.Bounds.Bottom;
+                TranslateX = Translate.X;
+                TranslateY = Translate.Y;
+            }
 
             _drawingContext = DrawingGroup.Append();
         }
