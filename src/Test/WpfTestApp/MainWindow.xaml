@@ -1,13 +1,17 @@
 ﻿<Window x:Class="WpfApp4.MainWindow"
+        Background="Transparent"
+        AllowsTransparency="True"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-
+        WindowStyle="None"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         FontSize="20"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
         mc:Ignorable="d"
+        Loaded="MainWindow_OnLoaded"
         Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="900" Width="1200">
+  <WindowChrome.WindowChrome><WindowChrome CaptionHeight="60"/></WindowChrome.WindowChrome>
   <Window.Resources>
     <Style x:Key="FocusVisual">
       <Setter Property="Control.Template">
@@ -425,6 +429,7 @@
       </Setter>
     </Style>
   </Window.Resources>
+  
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -435,7 +440,8 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <StackPanel  Visibility="Collapsed" Grid.Row="0" Orientation="Vertical" DataContext="{Binding ElementName=Shell,Path=Runspace}">
+    <StackPanel Visibility="Collapsed" Grid.Row="0" Orientation="Vertical"
+                DataContext="{Binding ElementName=Shell,Path=Runspace}">
       <GroupBox Margin="10,0,10,0" Style="{DynamicResource GroupBoxStyle1}"
                 DataContext="{Binding ElementName=Shell,Path=Runspace}" Background="AliceBlue" Header="Runspace">
         <Grid>
@@ -469,166 +475,179 @@
         <TextBlock x:Name="FSLocation" Text="{Binding SessionStateProxy.Path.CurrentFileSystemLocation}" />
       </StackPanel>
     </StackPanel>
-    <TextBlock Grid.Row="0" Margin="10" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold" />
-      <StackPanel Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Margin="10" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold" />
-          <StackPanel HorizontalAlignment="Center">
-            <TextBlock Margin="10,0,10,0" FontSize="14" Text="FontSize" Foreground="Gray" />
-            <TextBox Margin="10,0,0,0" Text="{Binding FontSize,Mode=TwoWay}" />
-          </StackPanel>
+    <StackPanel>
 
-          <StackPanel>
-            <TextBlock Margin="10,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumColumns}" />
-          </StackPanel>
+      <Glyphs
+        FontUri             = "C:\windows\fonts\GILSANUB.TTF"
+        FontRenderingEmSize = "36"
+        StyleSimulations    = "BoldSimulation"
+        UnicodeString       = "Terminal"
+        Fill                = "Black"
+        OriginX             = "0"
+        OriginY             = "43"
+      />
 
-          <StackPanel>
-            <TextBlock FontSize="14" Text="Rows" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumRows}" />
-          </StackPanel>
-          <TextBlock Margin="10" Text="Cursor" />
-          <StackPanel>
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="Col" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CursorColumn}" />
-          </StackPanel>
+    </StackPanel>
+    <TextBlock VerticalAlignment="Center"  Grid.Row="0" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold"
+               Foreground="White"
+               Background="Transparent" Height="40" />
+    <StackPanel Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="10" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold" />
+        <StackPanel HorizontalAlignment="Center">
+          <TextBlock Margin="10,0,10,0" FontSize="14" Text="FontSize" Foreground="Gray" />
+          <TextBox Margin="10,0,0,0" Text="{Binding FontSize,Mode=TwoWay}" />
+        </StackPanel>
 
-          <StackPanel>
-            <TextBlock FontSize="14" Text="Row" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CursorRow}" />
-          </StackPanel>
+        <StackPanel>
+          <TextBlock Margin="10,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumColumns}" />
+        </StackPanel>
 
-          <StackPanel Margin="25,0,0,0">
-            <TextBlock Margin="0,0,0,0" TextAlignment="Right" FontSize="14" Text="ViewX" Foreground="Gray" />
-            <StackPanel Orientation="Horizontal">
-              <TextBox HorizontalContentAlignment="Right" x:Name="ViewX" Text="{Binding Path=ViewX,Mode=TwoWay}"
-                       Width="40" />
-              <ScrollBar Value="{Binding Path=ViewX,Mode=TwoWay}" Minimum="-20" Maximum="100" SmallChange="1"
-                         Style="{DynamicResource ScrollBarStyle1}" Orientation="Vertical" />
-            </StackPanel>
-          </StackPanel>
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Rows" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumRows}" />
+        </StackPanel>
+        <TextBlock Margin="10" Text="Cursor" />
+        <StackPanel>
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="Col" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CursorColumn}" />
+        </StackPanel>
 
-          <StackPanel Margin="10,0,10,0">
-            <TextBlock TextAlignment="Right" FontSize="14" Text="ViewY" Foreground="Gray" />
-            <StackPanel Orientation="Horizontal">
-              <TextBox HorizontalContentAlignment="Right" x:Name="ViewY" Text="{Binding Path=ViewY,Mode=TwoWay}"
-                       Width="40" />
-              <ScrollBar Value="{Binding Path=ViewY,Mode=TwoWay}" Minimum="-20" Maximum="100" SmallChange="1"
-                         Style="{DynamicResource ScrollBarStyle1}" Orientation="Vertical" />
-            </StackPanel>
-          </StackPanel>
-          <CheckBox VerticalContentAlignment="Center" Content="LineMode" IsChecked="{Binding LineMode}" />
-          <CheckBox VerticalContentAlignment="Center" Margin="10,0,0,0" Content="Input Only"
-                    IsChecked="{Binding InputOnly}" />
-          <StackPanel Margin="15,0,10,0">
-            <TextBlock Margin="0,0,0,0" FontSize="14" TextAlignment="Right" Text="translateX" Foreground="Gray" />
-            <TextBlock Margin="0,0,0,0" TextAlignment="Right" Text="{Binding TranslateX,StringFormat=N2}" />
-          </StackPanel>
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Row" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CursorRow}" />
+        </StackPanel>
 
-          <StackPanel>
-            <TextBlock TextAlignment="Right" FontSize="14" Text="translateY" Foreground="Gray" />
-            <TextBlock TextAlignment="Right" Margin="0,0,0,0" Text="{Binding TranslateY,StringFormat=N2}" />
-          </StackPanel>
-          <StackPanel Margin="25,0,0,0" Orientation="Horizontal">
-            <TextBlock TextAlignment="Right" Margin="0,0,10,0" FontSize="14" TextWrapping="Wrap" Width="80"
-                       Text="Visible row count" Foreground="Gray" />
-            <TextBlock VerticalAlignment="Bottom" TextAlignment="Right" Margin="10,0,0,0"
-                       Text="{Binding VisibleRowCount}" />
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,0,0" TextAlignment="Right" FontSize="14" Text="ViewX" Foreground="Gray" />
+          <StackPanel Orientation="Horizontal">
+            <TextBox HorizontalContentAlignment="Right" x:Name="ViewX" Text="{Binding Path=ViewX,Mode=TwoWay}"
+                     Width="40" />
+            <ScrollBar Value="{Binding Path=ViewX,Mode=TwoWay}" Minimum="-20" Maximum="100" SmallChange="1"
+                       Style="{DynamicResource ScrollBarStyle1}" Orientation="Vertical" />
           </StackPanel>
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <StackPanel>
-            <TextBlock FontSize="14" Text="RectWidth" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding RectWidth,StringFormat=N1}" />
-          </StackPanel>
-          <StackPanel Margin="25,0,0,0">
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="RectHeight" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding RectHeight,StringFormat=N1}" />
-          </StackPanel>
-          <StackPanel>
-            <TextBlock FontSize="14" Text="BrushViewportX" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportX}" />
-          </StackPanel>
-          <StackPanel Margin="25,0,0,0">
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="BrushViewportY" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportY}" />
-          </StackPanel>
-          <StackPanel>
-            <TextBlock FontSize="14" Text="BrushViewportWidth" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportWidth}" />
-          </StackPanel>
-          <StackPanel Margin="25,0,0,0">
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="BrushViewportHeight" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportHeight}" />
+
+        <StackPanel Margin="10,0,10,0">
+          <TextBlock TextAlignment="Right" FontSize="14" Text="ViewY" Foreground="Gray" />
+          <StackPanel Orientation="Horizontal">
+            <TextBox HorizontalContentAlignment="Right" x:Name="ViewY" Text="{Binding Path=ViewY,Mode=TwoWay}"
+                     Width="40" />
+            <ScrollBar Value="{Binding Path=ViewY,Mode=TwoWay}" Minimum="-20" Maximum="100" SmallChange="1"
+                       Style="{DynamicResource ScrollBarStyle1}" Orientation="Vertical" />
           </StackPanel>
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Text="{Binding CharUnderCursor}" />
+        <CheckBox VerticalContentAlignment="Center" Content="LineMode" IsChecked="{Binding LineMode}" />
+        <CheckBox VerticalContentAlignment="Center" Margin="10,0,0,0" Content="Input Only"
+                  IsChecked="{Binding InputOnly}" />
+        <StackPanel Margin="15,0,10,0">
+          <TextBlock Margin="0,0,0,0" FontSize="14" TextAlignment="Right" Text="translateX" Foreground="Gray" />
+          <TextBlock Margin="0,0,0,0" TextAlignment="Right" Text="{Binding TranslateX,StringFormat=N2}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock TextAlignment="Right" FontSize="14" Text="translateY" Foreground="Gray" />
+          <TextBlock TextAlignment="Right" Margin="0,0,0,0" Text="{Binding TranslateY,StringFormat=N2}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0" Orientation="Horizontal">
+          <TextBlock TextAlignment="Right" Margin="0,0,10,0" FontSize="14" TextWrapping="Wrap" Width="80"
+                     Text="Visible row count" Foreground="Gray" />
+          <TextBlock VerticalAlignment="Bottom" TextAlignment="Right" Margin="10,0,0,0"
+                     Text="{Binding VisibleRowCount}" />
         </StackPanel>
       </StackPanel>
-
-
-      <wpfTerminalControlLib:WpfTerminalControl FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Black"
-                                                BackgroundColor="White" AutoResize="True" Grid.Row="2"
-                                                CursorBrush="DarkOrange"
-                                                x:Name="Terminal"
-                                                BorderBrush="Green" BorderThickness="1" Focusable="True" />
-      <!-- ReSharper disable once Xaml.MissingGridIndex -->
-      <wpfTerminalControlLib:WrappedPowerShell Visibility="Collapsed" x:Name="Shell" Terminal="{x:Reference Terminal}" />
-      <wpfTerminalControlLib:WpfInputLine IsEnabled="False" LineMode="True" InputOnly="True" CursorBrush="Azure"
-                                          x:Name="Input" BorderBrush="Red"
-                                          BorderThickness="1" AutoResize="True" Grid.Row="3" Focusable="True">
-        <wpfTerminalControlLib:WpfInputLine.CommandBindings>
-          <CommandBinding Command="Paste" Executed="PasteExecuted" />
-        </wpfTerminalControlLib:WpfInputLine.CommandBindings>
-        <wpfTerminalControlLib:WpfInputLine.InputBindings>
-          <KeyBinding Key="V" Modifiers="Control" Command="Paste" />
-        </wpfTerminalControlLib:WpfInputLine.InputBindings>
-      </wpfTerminalControlLib:WpfInputLine>
-
-      <StackPanel Orientation="Horizontal" Grid.Row="4" DataContext="{Binding ElementName=Input}" Grid.ColumnSpan="2">
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Margin="10" Text="Input" />
-          <StackPanel>
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding NumColumns}" />
-          </StackPanel>
-
-          <StackPanel>
-            <TextBlock FontSize="14" Text="Rows" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding Path=NumRows}" />
-          </StackPanel>
-          <TextBlock Margin="10" Text="Cursor" />
-          <StackPanel>
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="Col" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding Path=CursorColumn}" />
-          </StackPanel>
-
-          <StackPanel>
-            <TextBlock FontSize="14" Text="Row" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding Path=CursorRow}" />
-          </StackPanel>
-
-          <StackPanel Margin="25,0,0,0">
-            <TextBlock Margin="0,0,10,0" FontSize="14" Text="ViewX" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding Path=ViewX}" />
-          </StackPanel>
-
-          <StackPanel>
-            <TextBlock FontSize="14" Text="ViewY" Foreground="Gray" />
-            <TextBlock Margin="10,0,0,0" Text="{Binding ViewY}" />
-          </StackPanel>
-          <CheckBox Content="LineMode" IsChecked="{Binding LineMode}" />
-          <CheckBox Content="Input Only" IsChecked="{Binding InputOnly}" />
-
+      <StackPanel Orientation="Horizontal">
+        <StackPanel>
+          <TextBlock FontSize="14" Text="RectWidth" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding RectWidth,StringFormat=N1}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="RectHeight" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding RectHeight,StringFormat=N1}" />
+        </StackPanel>
+        <StackPanel>
+          <TextBlock FontSize="14" Text="BrushViewportX" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportX}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="BrushViewportY" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportY}" />
+        </StackPanel>
+        <StackPanel>
+          <TextBlock FontSize="14" Text="BrushViewportWidth" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportWidth}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="BrushViewportHeight" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportHeight}" />
         </StackPanel>
       </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding CharUnderCursor}" />
+      </StackPanel>
+    </StackPanel>
 
-      <StatusBar Grid.Row="4">
-        <TextBlock x:Name="MainStatus" Width="200" />
-        <ProgressBar Width="200" Maximum="100" x:Name="ProgressBar" />
-      </StatusBar>
-      <DataGrid Visibility="Collapsed" Grid.Column="1" Grid.Row="1"
-                ItemsSource="{Binding ElementName=Terminal,Path=InfoRecords}" />
+
+    <wpfTerminalControlLib:WpfTerminalControl FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Green"
+                                              Background="Black"
+                                              BackgroundColor="Green" AutoResize="True" Grid.Row="2"
+                                              CursorBrush="DarkOrange"
+                                              x:Name="Terminal" FontFamily="Lucida Console"
+                                              BorderBrush="Green" BorderThickness="1" Focusable="True" />
+    <!-- ReSharper disable once Xaml.MissingGridIndex -->
+    <wpfTerminalControlLib:WrappedPowerShell Visibility="Collapsed" x:Name="Shell" Terminal="{x:Reference Terminal}" />
+    <wpfTerminalControlLib:WpfInputLine IsEnabled="False" LineMode="True" InputOnly="True" CursorBrush="Azure"
+                                        x:Name="Input" BorderBrush="Red" Visibility="Collapsed"
+                                        BorderThickness="1" AutoResize="True" Grid.Row="3" Focusable="True">
+      <wpfTerminalControlLib:WpfInputLine.CommandBindings>
+        <CommandBinding Command="Paste" Executed="PasteExecuted" />
+      </wpfTerminalControlLib:WpfInputLine.CommandBindings>
+      <wpfTerminalControlLib:WpfInputLine.InputBindings>
+        <KeyBinding Key="V" Modifiers="Control" Command="Paste" />
+      </wpfTerminalControlLib:WpfInputLine.InputBindings>
+    </wpfTerminalControlLib:WpfInputLine>
+    <StackPanel Orientation="Horizontal" Grid.Row="4" DataContext="{Binding ElementName=Input}" Grid.ColumnSpan="2" Visibility="Collapsed">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="10" Text="Input" />
+        <StackPanel>
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding NumColumns}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Rows" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=NumRows}" />
+        </StackPanel>
+        <TextBlock Margin="10" Text="Cursor" />
+        <StackPanel>
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="Col" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=CursorColumn}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Row" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=CursorRow}" />
+        </StackPanel>
+
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="ViewX" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=ViewX}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="ViewY" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ViewY}" />
+        </StackPanel>
+        <CheckBox Content="LineMode" IsChecked="{Binding LineMode}" />
+        <CheckBox Content="Input Only" IsChecked="{Binding InputOnly}" />
+      </StackPanel>
+    </StackPanel>
+    <StatusBar Grid.Row="4" Visibility="Collapsed">
+      <TextBlock x:Name="MainStatus" Width="200" />
+      <ProgressBar Width="200" Maximum="100" x:Name="ProgressBar" />
+    </StatusBar>
+    <DataGrid Visibility="Collapsed" Grid.Column="1" Grid.Row="1"
+              ItemsSource="{Binding ElementName=Terminal,Path=InfoRecords}" />
   </Grid>
 </Window>

@@ -15,6 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -193,6 +194,12 @@ namespace WpfApp4
                 Input.ProvideInput(Clipboard.GetText());
             }
         }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // var transparencyConverter = new TransparencyConverter(this);
+            // transparencyConverter.MakeTransparent();
+        }
     }
 
     public class MyCommandCmdlet : PSCmdlet
@@ -297,5 +304,46 @@ namespace WpfApp4
             Console.SetOut(TextWriter.Null);
             Console.SetError(TextWriter.Null);
         }
+    }
+
+    class TransparencyConverter
+    {
+        private readonly Window _window;
+
+        public TransparencyConverter(Window window)
+        {
+            _window = window;
+        }
+
+        public void MakeTransparent()
+        {
+            var mainWindowPtr = new WindowInteropHelper(_window).Handle;
+            var mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
+            if (mainWindowSrc != null)
+                if (mainWindowSrc.CompositionTarget != null)
+                    mainWindowSrc.CompositionTarget.BackgroundColor = System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
+
+            var margins = new Margins
+            {
+                cxLeftWidth = 0,
+                cxRightWidth = Convert.ToInt32(_window.Width) * Convert.ToInt32(_window.Width),
+                cyTopHeight = 0,
+                cyBottomHeight = Convert.ToInt32(_window.Height) * Convert.ToInt32(_window.Height)
+            };
+
+            if (mainWindowSrc != null) DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Margins
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("DwmApi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins pMarInset);
     }
 }
