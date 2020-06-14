@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="6.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+    <PackageReference Include="Xunit.StaFact" Version="1.0.33-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfTerminalControlLib\WpfTerminalControlLib.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTerminalControlLib", "Wp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTestApp", "Test\WpfTestApp\WpfTestApp.csproj", "{89523515-2612-440B-80D5-AFD7326B4FE7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerminalTest", "Test\TerminalTest\TerminalTest.csproj", "{EA9FDC77-2DA6-45E1-A060-51AF87994CA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{89523515-2612-440B-80D5-AFD7326B4FE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89523515-2612-440B-80D5-AFD7326B4FE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89523515-2612-440B-80D5-AFD7326B4FE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA9FDC77-2DA6-45E1-A060-51AF87994CA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA9FDC77-2DA6-45E1-A060-51AF87994CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA9FDC77-2DA6-45E1-A060-51AF87994CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA9FDC77-2DA6-45E1-A060-51AF87994CA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

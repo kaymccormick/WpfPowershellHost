@@ -5,6 +5,7 @@ namespace Terminal1
 {
     public static class TerminalCharacteristics
     {
+
         public static readonly DependencyProperty NumRowsProperty = DependencyProperty.RegisterAttached(
             "NumRows", typeof(int), typeof(TerminalCharacteristics),
             new FrameworkPropertyMetadata(-1,

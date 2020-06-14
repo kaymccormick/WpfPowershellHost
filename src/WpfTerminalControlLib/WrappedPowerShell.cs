@@ -36,7 +36,16 @@ namespace WpfTerminalControlLib
 
         public static readonly RoutedEvent ShellChangedEvent ;
         private IAsyncResult _r1;
+        private InitialSessionState _iss;
 
+        public static RoutedEvent InitialSessionStateChangedEvent = EventManager.RegisterRoutedEvent(
+                                                                  "InitiailSessionStateChanged"
+                                                                , RoutingStrategy.Direct
+                                                                , typeof (
+                                                                      RoutedPropertyChangedEventHandler
+                                                                      <InitialSessionState> )
+                                                                , typeof (WrappedPowerShell )
+                                                                 ) ;
 
         public WpfTerminalControl Terminal { get; set; }
         static WrappedPowerShell ( )
@@ -92,7 +101,11 @@ namespace WpfTerminalControlLib
 
         private static object CoerceShellValue ( DependencyObject d , object basevalue )
         {
-            return basevalue ;
+            var w = (WrappedPowerShell)d;
+            if (basevalue is PowerShell) return basevalue;
+            var shell = PowerShell.Create();
+            shell.Runspace = w.Runspace;
+            return shell;
         }
 
         private static void OnShellChanged (
@@ -113,10 +126,51 @@ namespace WpfTerminalControlLib
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public Host Host { get ; set ; }
 
-        public FlowDocument OutputDocument { get ; set ; }
 
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        public Runspace Runspace { get ; set ; }
+        public static readonly DependencyProperty RunspaceProperty = DependencyProperty.Register(
+            "Runspace", typeof(Runspace), typeof(WrappedPowerShell), new PropertyMetadata(default(Runspace), OnRunspaceChanged, CoerceValueCallback2));
+
+        private static object CoerceValueCallback2(DependencyObject d, object basevalue)
+        {
+             var w = (WrappedPowerShell)d;
+            // if (!(basevalue is Runspace))
+            // {
+            var initialSessionState = (System.Management.Automation.Runspaces.InitialSessionState)d.GetValue(InitialSessionStateProperty);
+            var runspace = RunspaceFactory.CreateRunspace(w.Host, initialSessionState);
+            return runspace;
+            // }
+        }
+
+        public Runspace Runspace
+        {
+            get { return (Runspace) GetValue(RunspaceProperty); }
+            set { SetValue(RunspaceProperty, value); }
+        }
+
+        private static void OnRunspaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((WrappedPowerShell) d).OnRunspaceChanged((Runspace) e.OldValue, (Runspace) e.NewValue);
+        }
+
+
+        public event RoutedPropertyChangedEventHandler<InitialSessionState> InitialSessionStateChanged
+        {
+            add
+            {
+                AddHandler(InitialSessionStateChangedEvent, value);
+            }
+            remove
+            {
+                RemoveHandler(InitialSessionStateChangedEvent, value);
+
+            }
+        } 
+        protected virtual void OnRunspaceChanged(Runspace oldValue, Runspace newValue)
+        {
+            Runspace.Open();
+            Host.Runspace = Runspace;
+            CoerceValue(ShellProperty);
+        }
 
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
         public PowerShell Shell
@@ -125,60 +179,117 @@ namespace WpfTerminalControlLib
             set => SetValue ( ShellProperty , ( PowerShell ) value ) ;
         }
 
+        public static readonly DependencyProperty InitialSessionStateProperty = DependencyProperty.Register(
+            "InitialSessionState", typeof(InitialSessionState), typeof(WrappedPowerShell), new PropertyMetadata(default(InitialSessionState), OnInitialSessionStateChanged, CoerceValueCallback));
+
+        private static object CoerceValueCallback(DependencyObject d, object basevalue)
+        {
+            var w=  (WrappedPowerShell)d;
+            if (!(basevalue is InitialSessionState))
+            {
+                return System.Management.Automation.Runspaces.InitialSessionState.CreateDefault();
+            }
+
+            return basevalue;
+        }
+
+        public InitialSessionState InitialSessionState
+        {
+            get { return (InitialSessionState) GetValue(InitialSessionStateProperty); }
+            set { SetValue(InitialSessionStateProperty, value); }
+        }
+
+        private static void OnInitialSessionStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((WrappedPowerShell) d).OnInitialSessionStateChanged((InitialSessionState) e.OldValue, (InitialSessionState) e.NewValue);
+        }
+
+
+
+        protected virtual void OnInitialSessionStateChanged(InitialSessionState oldValue, InitialSessionState newValue)
+        {
+            CoerceValue(RunspaceProperty);
+            var ev = new RoutedPropertyChangedEventArgs<InitialSessionState>(
+                oldValue, newValue, InitialSessionStateChangedEvent);
+            RaiseEvent(ev);
+        }
+
 
         public override void EndInit ( )
         {
             Host           = new Host (Terminal) ;
-            Terminal.TextEntryComplete +=TerminalOnTextEntryComplete;
-            InitialSessionState iss = InitialSessionState.CreateDefault();
-            SessionStateVariableEntry var1 = new
-                SessionStateVariableEntry("test1",
-                    "MyVar1",
-                    "Initial session state MyVar1 test");
-            iss.Variables.Add(var1);
+            //CoerceValue(InitialSessionStateProperty);
+            if (Terminal != null) Terminal.TextEntryComplete += TerminalOnTextEntryComplete;
+            //InitialSessionState = InitialSessionState.CreateDefault();
+            // SessionStateVariableEntry var1 = new
+                // SessionStateVariableEntry("test1",
+                    // "MyVar1",
+                    // "Initial session state MyVar1 test");
+            // _iss.Variables.Add(var1);
 
-            SessionStateVariableEntry var2 = new
-                SessionStateVariableEntry("test2",
-                    "MyVar2",
-                    "Initial session state MyVar2 test");
-            iss.Variables.Add(var2);
+            // SessionStateVariableEntry var2 = new
+                // SessionStateVariableEntry("test2",
+                    // "MyVar2",
+                    // "Initial session state MyVar2 test");
+            // _iss.Variables.Add(var2);
 
-            Runspace = RunspaceFactory.CreateRunspace ( Host ,iss) ;
+            // Runspace = RunspaceFactory.CreateRunspace ( Host ,InitialSessionState) ;
             
-            foreach (var sessionStateCommandEntry in iss.Commands)
-            {
-                if(sessionStateCommandEntry.CommandType == CommandTypes.Cmdlet)
-                Debug.WriteLine(sessionStateCommandEntry.Name);
+            // foreach (var acmd in InitialSessionState.Commands)
+            // ?{
                 
-            }
-            Runspace.Open();
-            Host.Runspace = Runspace ;
+                // if(acmd.CommandType == CommandTypes.Cmdlet)
+                // Debug.WriteLine(acmd.Name);
+                
+            // }
             
             //Host.DebuggerEnabled = true ;
-            if ( Shell == null )
-            {
-                Debug.WriteLine("creating powershell from wrappedpowershell");
-                Shell = PowerShell.Create ( ) ;
+            // if ( Shell == null )
+            // {
+                // Debug.WriteLine("creating powershell from wrappedpowershell");
+                // Shell = PowerShell.Create ( ) ;
                 
-                Shell.Runspace = Runspace;
-            }
+                // Shell.Runspace = Runspace;
+            // }
         }
 
-        private void TerminalOnTextEntryComplete(object sender, TextEntryCompleteArgs e)
+        private async void TerminalOnTextEntryComplete(object sender, TextEntryCompleteArgs e)
         {
             Host.HostUI.WriteLine("");
-            Debug.WriteLine(Execute(e.Text));
-            Debug.WriteLine("Back from execute");
+            IsExecuting = true;
+            await ExecuteAsync(e.Text).ConfigureAwait(true);
+            Debug.WriteLine("Back from execute1");
+            IsExecuting = false;
 
         }
 
+        public static readonly DependencyProperty IsExecutingProperty = DependencyProperty.Register(
+            "IsExecuting", typeof(bool), typeof(WrappedPowerShell), new PropertyMetadata(default(bool), OnIsExecutingChanged));
+
+        public bool IsExecuting
+        {
+            get { return (bool) GetValue(IsExecutingProperty); }
+            set { SetValue(IsExecutingProperty, value); }
+        }
+
+        private static void OnIsExecutingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((WrappedPowerShell) d).OnIsExecutingChanged((bool) e.OldValue, (bool) e.NewValue);
+        }
+
+
+
+        protected virtual void OnIsExecutingChanged(bool oldValue, bool newValue)
+        {
+        }
+    
 
         /// <summary>
         /// Basic script execution routine - any runtime exceptions are
         /// caught and passed back into the engine to display.
         /// </summary>
         /// <param name="cmd">The parameter is not used.</param>
-        public async Task Execute ( string cmd )
+        public async Task ExecuteAsync ( string cmd )
         {
             try
             {
@@ -378,12 +489,7 @@ namespace WpfTerminalControlLib
         public override string ConvertToString ( object value , IValueSerializerContext context )
         {
             var w = ( WrappedPowerShell ) value ;
-            var s = context.GetValueSerializerFor ( w.OutputDocument.GetType ( ) ) ;
-            if ( s != null
-                 && s.CanConvertToString ( w.OutputDocument , context ) )
-            {
-                Debug.WriteLine ( s.ConvertToString ( w.OutputDocument , context ) ) ;
-            }
+           
 
             return "derp" ;
         }

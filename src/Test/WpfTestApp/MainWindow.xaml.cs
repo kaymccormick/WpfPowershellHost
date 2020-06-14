@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -19,6 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NLog;
 using Terminal1;
+using WpfTerminalControlLib;
 
 namespace WpfApp4
 {
@@ -52,20 +55,69 @@ namespace WpfApp4
                 MainStatus.Text = args.Record.StatusDescription;
             };
             Terminal.DebugCb = DebugCb;
-            Input.TextEntryComplete += (object sender, TextEntryCompleteArgs args) =>
+            Terminal.ExecuteCommandComplete += TerminalOnExecuteCommandComplete;
+            if (Shell.InitialSessionState != null)
             {
-                Debug.WriteLine(args.Text);
-                Shell.Execute(args.Text);
-                Debug.WriteLine("Back from execute");
+                Shell.InitialSessionState.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
+                    ""));
+            }
+
+            Shell.InitialSessionStateChanged += (sender, args) =>
+            {
+                if (args.NewValue != null)
+                    args.NewValue.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
+                        ""));
             };
+            Shell.CoerceValue(WrappedPowerShell.InitialSessionStateProperty);
+            Shell.CoerceValue(WrappedPowerShell.RunspaceProperty);
+
+            Input.TextEntryComplete += OnInputOnTextEntryComplete;
             // Te???rminal.TextEntryComplete += (object sender, TextEntryCompleteArgs args) =>
             // {
                 // Terminal.WriteLine();
                 // Debug.WriteLine(args.Text);
-                // Shell.Execute(args.Text);
+                // Shell.ExecuteAsync(args.Text);
                 // Debug.WriteLine("Back from execute");
             // };
 
+
+        }
+
+        private void TerminalOnExecuteCommandComplete(object sender, EventArgs e)
+        {
+            FSLocation.GetBindingExpression(TextBlock.TextProperty)?.UpdateTarget();
+        }
+
+        public static readonly DependencyProperty IsExecutingProperty = DependencyProperty.Register(
+            "IsExecuting", typeof(bool), typeof(MainWindow), new PropertyMetadata(default(bool), OnIsExecutingChanged));
+
+        public bool IsExecuting
+        {
+            get { return (bool) GetValue(IsExecutingProperty); }
+            set { SetValue(IsExecutingProperty, value); }
+        }
+
+        private static void OnIsExecutingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((MainWindow) d).OnIsExecutingChanged((bool) e.OldValue, (bool) e.NewValue);
+        }
+
+
+
+        protected virtual void OnIsExecutingChanged(bool oldValue, bool newValue)
+        {
+        }
+
+        private async void OnInputOnTextEntryComplete(object sender, TextEntryCompleteArgs args)
+        {
+            Debug.WriteLine(args.Text);
+            IsExecuting = true;
+            Debug.WriteLine("Calling executeasync");
+
+            await Shell.ExecuteAsync(args.Text).ConfigureAwait(true);
+            Debug.WriteLine("Back from execute2");
+            TerminalOnExecuteCommandComplete(null, null);
+            IsExecuting = false;
 
         }
 
@@ -140,6 +192,16 @@ namespace WpfApp4
             {
                 Input.ProvideInput(Clipboard.GetText());
             }
+        }
+    }
+
+    public class MyCommandCmdlet : PSCmdlet
+    {
+        /// <inheritdoc />
+        protected override void EndProcessing()
+        {
+            base.EndProcessing();
+            WriteWarning("test");
         }
     }
 

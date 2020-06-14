@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 using NLog;
-using WpfTerminalControlLib;
 
-namespace Terminal1
+namespace WpfTerminalControlLib
 {
     public class WpfInputLine : WpfTerminalControl
     {

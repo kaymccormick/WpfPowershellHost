@@ -41,28 +41,24 @@
               </Grid.ColumnDefinitions>
 
 
-              <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Aqua" BorderThickness="1"
+              <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       x:Name="Bd">
                 <Grid>
                   <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                   </Grid.RowDefinitions>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
-                  <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="20" Stroke="Coral">
+                  <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="20">
                     <Rectangle.Fill>
-                      <DrawingBrush x:Name="DrawingBrush0" AlignmentX="Left" AlignmentY="Bottom"
+                      <DrawingBrush AlignmentX="Left" AlignmentY="Bottom"
                                     Stretch="Fill"
                                     Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
-                        <DrawingBrush.Transform>
-                          <TransformGroup>
-                            <TranslateTransform X="00" Y="00" />
-                          </TransformGroup>
-                        </DrawingBrush.Transform>
                         <DrawingBrush.Drawing>
-                          <DrawingGroup x:Name="DG0">
+                          <DrawingGroup x:Name="ColLabel1DrawingGroup">
                             <DrawingGroup.Transform>
                               <RotateTransform Angle="270" />
                             </DrawingGroup.Transform>
@@ -72,9 +68,30 @@
                     </Rectangle.Fill>
 
                   </Rectangle>
-                  <Rectangle Grid.Row="1" x:Name="Rect" HorizontalAlignment="Left" VerticalAlignment="Top">
+                  <Rectangle Grid.Row="1" x:Name="ColLabel2" HorizontalAlignment="Stretch" Height="20">
                     <Rectangle.Fill>
-                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Bottom" Stretch="None"
+                      <DrawingBrush x:Name="ColLabel2DrawingBrush" AlignmentX="Left" AlignmentY="Bottom"
+                                    Stretch="Fill"
+                                    Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
+                        <DrawingBrush.Transform>
+                          <TransformGroup>
+                            <TranslateTransform X="00" Y="00" />
+                          </TransformGroup>
+                        </DrawingBrush.Transform>
+                        <DrawingBrush.Drawing>
+                          <DrawingGroup x:Name="ColLabel2DrawingGroup">
+                            <DrawingGroup.Transform>
+                              <RotateTransform Angle="270" />
+                            </DrawingGroup.Transform>
+                          </DrawingGroup>
+                        </DrawingBrush.Drawing>
+                      </DrawingBrush>
+                    </Rectangle.Fill>
+
+                  </Rectangle>
+                  <Rectangle Grid.Row="2" x:Name="Rect" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Rectangle.Fill>
+                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" Stretch="None"
                                     Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
                         <DrawingBrush.Transform>
                           <TranslateTransform x:Name="Translate" />
@@ -84,7 +101,7 @@
                     </Rectangle.Fill>
 
                   </Rectangle>
-                  <Rectangle Visibility="Collapsed" Grid.Row="1" x:Name="Rect2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  <Rectangle Visibility="Collapsed" Grid.Row="2" x:Name="Rect2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                              Panel.ZIndex="110">
                     <Rectangle.Fill>
                       <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Center" AlignmentY="Center"
@@ -135,7 +152,8 @@
                 </Popup>
               </Grid>
               <Rectangle Name="FocusVisual" Grid.ColumnSpan="3"
-                         Stroke="Fuchsia" StrokeThickness="3"
+                         Stroke="DarkOrange" StrokeThickness="10"
+                         RadiusX="3" RadiusY="3"
                          Visibility="Collapsed" />
             </Grid>
           </Border>

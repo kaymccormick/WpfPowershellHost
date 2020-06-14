@@ -27,16 +27,59 @@ namespace WpfTerminalControlLib
     {
         public static readonly DependencyProperty CharUnderCursorProperty = DependencyProperty.Register(
             "CharUnderCursor", typeof(char), typeof(WpfTerminalControl),
-            new PropertyMetadata(default(char), OnCharUnderCursorChanged));
+            new PropertyMetadata(default(char)/*, OnCharUnderCursorChanged*/));
 
-[Obsolete()]
+           public static readonly DependencyProperty AutoResizeProperty = DependencyProperty.Register(
+            "AutoResize", typeof(bool), typeof(WpfTerminalControl),
+            new PropertyMetadata(default(bool), OnAutoResizeChanged));
+
+        public static readonly DependencyProperty CursorBrushProperty = DependencyProperty.Register(
+            "CursorBrush", typeof(Brush), typeof(WpfTerminalControl), new PropertyMetadata(default(Brush)));
+
+        public static readonly DependencyProperty InputOnlyProperty = DependencyProperty.Register(
+            "InputOnly", typeof(bool), typeof(WpfTerminalControl), new PropertyMetadata(default(bool)));
+
+        public static readonly DependencyProperty WindowTitleProperty = DependencyProperty.Register(
+            "WindowTitle", typeof(string), typeof(WpfTerminalControl),
+            new PropertyMetadata(default(string), OnWindowTitleChanged));
+
+        public static readonly DependencyProperty ViewXProperty = DependencyProperty.Register(
+            "ViewX", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewXChanged));
+
+        public static readonly DependencyProperty ViewYProperty = DependencyProperty.Register(
+            "ViewY", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewYChanged));
+
+        public static readonly DependencyProperty CursorRowProperty = DependencyProperty.Register(
+            "CursorRow", typeof(int), typeof(WpfTerminalControl),
+            new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender,
+                OnCursorRowChanged));
+
+        public static readonly DependencyProperty BackgroundColorProperty = DependencyProperty.Register(
+            "BackgroundColor", typeof(ConsoleColor), typeof(WpfTerminalControl),
+            new PropertyMetadata(ConsoleColor.Black, OnBackgroundColorChanged));
+
+        public static readonly DependencyProperty VisibleRowCountProperty = DependencyProperty.Register(
+            "VisibleRowCount", typeof(int), typeof(WpfTerminalControl),
+            new PropertyMetadata(default(int), VisibleRowCountChanged));
+
+        public static readonly DependencyProperty LineModeProperty = DependencyProperty.Register(
+            "LineMode", typeof(bool), typeof(WpfTerminalControl),
+            new PropertyMetadata(default(bool), PropertyChangedCallback));
+
+        public static readonly DependencyProperty CursorColumnProperty = DependencyProperty.Register(
+            "CursorColumn", typeof(int), typeof(WpfTerminalControl),
+            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender,
+                OnCursorColumnChanged, CoerceCursorColumn));
+
+        [Obsolete()]
         public char CharUnderCursor
         {
             get { return (char) GetValue(CharUnderCursorProperty); }
             set { SetValue(CharUnderCursorProperty, value); }
         }
 
-        private static void OnCharUnderCursorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    /*
+    private static void OnCharUnderCursorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((WpfTerminalControl) d).OnCharUnderCursorChanged((char) e.OldValue, (char) e.NewValue);
         }
@@ -44,7 +87,7 @@ namespace WpfTerminalControlLib
         protected virtual void OnCharUnderCursorChanged(char oldValue, char newValue)
         {
         }
-
+*/
 
         protected override void OnGotFocus(RoutedEventArgs e)
         {
@@ -67,7 +110,7 @@ namespace WpfTerminalControlLib
         }
 
         // Determine if a geometry within the visual was hit.
-        public static Drawing HitTestGeometryInVisual([NotNull] Visual visual, Point pt)
+        private static Drawing HitTestGeometryInVisual([NotNull] Visual visual, Point pt)
         {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
             // Retrieve the group of drawings for the visual.
@@ -76,7 +119,7 @@ namespace WpfTerminalControlLib
         }
 
         // Enumerate the drawings in the DrawingGroup.
-        public static Drawing EnumDrawingGroup(DrawingGroup drawingGroup, Point pt)
+        private static Drawing EnumDrawingGroup(DrawingGroup drawingGroup, Point pt)
         {
             var drawingCollection = drawingGroup.Children;
 
@@ -320,7 +363,7 @@ namespace WpfTerminalControlLib
             Rect1 = (Rectangle) GetTemplateChild("Rect");
             Rect2 = (Rectangle) GetTemplateChild("Rect2");
             ColLabel = (Rectangle) GetTemplateChild("ColLabel");
-            DG0 = (DrawingGroup) GetTemplateChild("DG0");
+            DG0 = (DrawingGroup) GetTemplateChild("ColLabelDrawingGroup");
             DG2 = (DrawingGroup) GetTemplateChild("DG2");
 
 #if ROWDGMODE
@@ -649,48 +692,7 @@ namespace WpfTerminalControlLib
             }
         }
 
-        public static readonly DependencyProperty AutoResizeProperty = DependencyProperty.Register(
-            "AutoResize", typeof(bool), typeof(WpfTerminalControl),
-            new PropertyMetadata(default(bool), OnAutoResizeChanged));
-
-        public static readonly DependencyProperty CursorBrushProperty = DependencyProperty.Register(
-            "CursorBrush", typeof(Brush), typeof(WpfTerminalControl), new PropertyMetadata(default(Brush)));
-
-        public static readonly DependencyProperty InputOnlyProperty = DependencyProperty.Register(
-            "InputOnly", typeof(bool), typeof(WpfTerminalControl), new PropertyMetadata(default(bool)));
-
-        public static readonly DependencyProperty WindowTitleProperty = DependencyProperty.Register(
-            "WindowTitle", typeof(string), typeof(WpfTerminalControl),
-            new PropertyMetadata(default(string), OnWindowTitleChanged));
-
-        public static readonly DependencyProperty ViewXProperty = DependencyProperty.Register(
-            "ViewX", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewXChanged));
-
-        public static readonly DependencyProperty ViewYProperty = DependencyProperty.Register(
-            "ViewY", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewYChanged));
-
-        public static readonly DependencyProperty CursorRowProperty = DependencyProperty.Register(
-            "CursorRow", typeof(int), typeof(WpfTerminalControl),
-            new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender,
-                OnCursorRowChanged));
-
-        public static readonly DependencyProperty BackgroundColorProperty = DependencyProperty.Register(
-            "BackgroundColor", typeof(ConsoleColor), typeof(WpfTerminalControl),
-            new PropertyMetadata(ConsoleColor.Black, OnBackgroundColorChanged));
-
-        public static readonly DependencyProperty VisibleRowCountProperty = DependencyProperty.Register(
-            "VisibleRowCount", typeof(int), typeof(WpfTerminalControl),
-            new PropertyMetadata(default(int), VisibleRowCountChanged));
-
-        public static readonly DependencyProperty LineModeProperty = DependencyProperty.Register(
-            "LineMode", typeof(bool), typeof(WpfTerminalControl),
-            new PropertyMetadata(default(bool), PropertyChangedCallback));
-
-        public static readonly DependencyProperty CursorColumnProperty = DependencyProperty.Register(
-            "CursorColumn", typeof(int), typeof(WpfTerminalControl),
-            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender,
-                OnCursorColumnChanged, CoerceCursorColumn));
-
+     
         private static object CoerceCursorColumn(DependencyObject d, object basevalue)
         {
             var t = (WpfTerminalControl) d;
@@ -932,10 +934,12 @@ namespace WpfTerminalControlLib
             }
 
 
-            var dc = DG0.Open();
+            var dc = DG2.Open();
             var origin = new Point(0, 0);
 
             var fontSize = FontSize * (xadvance / yadvance);
+            /* If font size computed relative to each individual line is too small (defined here as less than 16pt), increase font size
+                to 28pt. */
             if (fontSize < 16) fontSize = 28;
             var gli = _glyphTypeface.CharacterToGlyphMap['x'];
             var xadvance1 = _glyphTypeface.AdvanceWidths[gli] * fontSize;
@@ -1389,8 +1393,11 @@ namespace WpfTerminalControlLib
         {
             if (Translate != null)
             {
-                Translate.Y = DrawingGroup.Bounds.Top;
-                TranslateY = DrawingGroup.Bounds.Top;
+                // Translate.Y = -1 * DrawingGroup.Bounds.Top + ViewY * CellHeight;
+                // Translate.Y = (NumRows * CellHeight - DrawingGroup.Bounds.Height)
+                
+                TranslateY = Translate.Y;
+                Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
                 _debug("View Y = " + newValue);
                 _debug("Translate y is " + Translate.Y);
             }
@@ -1598,6 +1605,7 @@ namespace WpfTerminalControlLib
 
         public ConcurrentQueue<string> Input { get; set; } = new ConcurrentQueue<string>();
         public event TextEntryCompleteHandler TextEntryComplete;
+        public event EventHandler ExecuteCommandComplete;
 
         /// <inheritdoc />
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -1699,6 +1707,8 @@ namespace WpfTerminalControlLib
         //fixme
         private string GetLineText(int row)
         {
+            if (_buffer2.Count <= row)
+                return String.Empty;
             var sb = new StringBuilder();
             for (var i = NumReservedColumns; i < NumColumns && _buffer2[row][i] != '\0'; i++)
                 if (i < _buffer2[row].Count)
@@ -2113,29 +2123,37 @@ AddRowsToBuffer(CursorRow + 1);
             var newCursorColumn = CursorColumn;
             var newCursorRow = CursorRow;
             var fNewRow = false;
-            while (newCursorColumn + s.Length > NumColumns)
+
+            if (!String.IsNullOrEmpty(s))
             {
-                var length = NumColumns - newCursorColumn;
-                var s1 = s.Substring(0, length);
-                var text1 = new FormattedText(s1, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, Typeface1,
-                    (double) GetValue(FontSizeProperty), colors[(int) ForegroundColor],
+                var foreground = colors[(int) ForegroundColor];
+
+                while (newCursorColumn + s.Length > NumColumns)
+                {
+                    var length = NumColumns - newCursorColumn;
+                    var s1 = s.Substring(0, length);
+                    var text1 = new FormattedText(s1, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
+                        Typeface1,
+                        (double) GetValue(FontSizeProperty), foreground,
+                        _pixelsPerDip);
+                    _drawingContext.DrawText(text1, _curOrigin);
+                    newCursorColumn = NumReservedColumns;
+                    _curOrigin.X = newCursorColumn * CellWidth;
+                    _curOrigin.Y += CellHeight;
+                    s = s.Substring(length);
+                    fNewRow = true;
+                    newCursorRow++;
+                    if (ViewY + CursorRow == NumRows) ViewY++;
+                }
+
+                var text = new FormattedText(s, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, Typeface1,
+                    (double) GetValue(FontSizeProperty), foreground,
                     _pixelsPerDip);
-                _drawingContext.DrawText(text1, _curOrigin);
-                newCursorColumn = NumReservedColumns;
-                _curOrigin.X = newCursorColumn * CellWidth;
-                _curOrigin.Y += CellHeight;
-                s = s.Substring(length);
-                fNewRow = true;
-                newCursorRow++;
-                if (ViewY + CursorRow == NumRows) ViewY++;
+
+                _drawingContext.DrawText(text, _curOrigin);
+
             }
-
-            var text = new FormattedText(s, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, Typeface1,
-                (double) GetValue(FontSizeProperty), colors[(int) ForegroundColor],
-                _pixelsPerDip);
-
-            _drawingContext.DrawText(text, _curOrigin);
-
+       
             if (doWriteNewLine)
             {
                 _curOrigin.Y += CellHeight;
@@ -2144,18 +2162,29 @@ AddRowsToBuffer(CursorRow + 1);
             }
 
             if (fNewRow)
+            {
                 CursorRow = newCursorRow;
-
-
-            newCursorColumn = NumReservedColumns;
-            _curOrigin.X = newCursorColumn * CellWidth;
-            CursorColumn = newCursorColumn;
+                newCursorColumn = NumReservedColumns;
+                _curOrigin.X = newCursorColumn * CellWidth;
+                CursorColumn = newCursorColumn;
+            }
 
             _drawingContext.Close();
+
             Translate.X = DrawingGroup.Bounds.Left;
+            var message =
+                $"( {DrawingGroup.Bounds.X:N2}, {DrawingGroup.Bounds.Y:N2} ) - ({DrawingGroup.Bounds.Right:N2}, {DrawingGroup.Bounds.Bottom:N2} )";
+            Debug.WriteLine(message);
+            if (newCursorRow == ViewY + NumRows)
+            {
+                ViewY += 1;
+            }
+
             Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
+            //Translate.Y = DrawingGroup.Bounds.Bottom;
             TranslateX = Translate.X;
             TranslateY = Translate.Y;
+
             _drawingContext = DrawingGroup.Append();
         }
     }
