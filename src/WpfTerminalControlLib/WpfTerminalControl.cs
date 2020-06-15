@@ -305,7 +305,7 @@ namespace WpfTerminalControlLib
             _drawingContext.DrawRectangle(colors[(int) backgroundColor], null,
                 new Rect(cellOrigin, new Size(xadvance, yadvance)));
             var x1 = new FormattedText(char1.ToString(), Thread.CurrentThread.CurrentUICulture,
-                FlowDirection.LeftToRight, Typeface1, (double) GetValue(FontSizeProperty),
+                FlowDirection.LeftToRight, Typeface, (double) GetValue(FontSizeProperty),
                 colors[(int) foregroundColor],
                 _pixelsPerDip);
             _drawingContext.DrawText(x1, cellOrigin);
@@ -675,8 +675,6 @@ namespace WpfTerminalControlLib
         private DrawingBrush _brush;
         private Rectangle _rect;
 
-        private Typeface _typeface;
-
         private GlyphTypeface _glyphTypeface;
         private double yadvance;
         private double xadvance;
@@ -767,9 +765,9 @@ namespace WpfTerminalControlLib
         private void OnFontFamilyChanged(FontFamily eOldValue, FontFamily eNewValue)
         {
             Logger.Info(nameof(OnFontFamilyChanged));
-            Typeface1 = new Typeface(eNewValue, FontStyle, FontWeight, FontStretch);
+            Typeface = new Typeface(eNewValue, FontStyle, FontWeight, FontStretch);
 
-            if (!Typeface1.TryGetGlyphTypeface(out _glyphTypeface))
+            if (!Typeface.TryGetGlyphTypeface(out _glyphTypeface))
                 throw new InvalidControlState("Unable to get glyph typeface");
             var fontSize = FontSize;
             var gli = _glyphTypeface.CharacterToGlyphMap['p'];
@@ -786,8 +784,8 @@ namespace WpfTerminalControlLib
 
         public WpfTerminalControl()
         {
-            Typeface1 = new Typeface(FontFamily.Source);
-            if (!Typeface1.TryGetGlyphTypeface(out _glyphTypeface))
+            Typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
+            if (!Typeface.TryGetGlyphTypeface(out _glyphTypeface))
                 throw new InvalidControlState("Unable to get glyph typeface");
 
             _drawingGroup = new DrawingGroup();
@@ -948,7 +946,7 @@ namespace WpfTerminalControlLib
             for (var i = 0; i < eNewValue; i++)
             {
                 var tt = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-                    Typeface1, fontSize, Brushes.Black, _pixelsPerDip);
+                    Typeface, fontSize, Brushes.Black, _pixelsPerDip);
                 tt.SetFontWeight(FontWeights.ExtraBold);
                 dc.DrawText(tt, origin);
 
@@ -1979,6 +1977,7 @@ AddRowsToBuffer(CursorRow + 1);
         private DrawingGroup _dg0;
         private Rectangle _colLabel;
         private DrawingGroup _drawingGroup;
+        private Typeface _typeface;
 
         public bool DiagnosticsEnabled
         {
@@ -2082,7 +2081,7 @@ AddRowsToBuffer(CursorRow + 1);
             }
         }
 
-        public Typeface Typeface1
+        public Typeface Typeface
         {
             get { return _typeface; }
             set { _typeface = value; }
@@ -2133,7 +2132,7 @@ AddRowsToBuffer(CursorRow + 1);
                     var length = NumColumns - newCursorColumn;
                     var s1 = s.Substring(0, length);
                     var text1 = new FormattedText(s1, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
-                        Typeface1,
+                        Typeface,
                         (double) GetValue(FontSizeProperty), foreground,
                         _pixelsPerDip);
                     _drawingContext.DrawText(text1, _curOrigin);
@@ -2146,7 +2145,7 @@ AddRowsToBuffer(CursorRow + 1);
                     if (ViewY + CursorRow == NumRows) ViewY++;
                 }
 
-                var text = new FormattedText(s, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, Typeface1,
+                var text = new FormattedText(s, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, Typeface,
                     (double) GetValue(FontSizeProperty), foreground,
                     _pixelsPerDip);
 

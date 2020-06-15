@@ -354,10 +354,11 @@ namespace WpfTerminalControlLib
             var shell = (PowerShell) ar.AsyncState;
             var r2 = shell.EndInvoke(ar);
 
-            foreach (var psObject in r2)
-            {
-                Debug.Write(psObject);
-            }
+            if (r2 != null)
+                foreach (var psObject in r2)
+                {
+                    Debug.Write(psObject);
+                }
         }
 
         /// <summary>
