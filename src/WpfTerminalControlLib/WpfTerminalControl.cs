@@ -312,10 +312,14 @@ namespace WpfTerminalControlLib
             Logger.Trace($"Drawtext {char1} at {cellOrigin}");
             Trace.WriteLine($"{cellOrigin}");
             _drawingContext.Close();
-            Translate.X = DrawingGroup.Bounds.Left;
-            Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
-            TranslateX = Translate.X;
-            TranslateY = Translate.Y;
+            if (Translate != null)
+            {
+                Translate.X = DrawingGroup.Bounds.Left;
+                Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
+                TranslateX = Translate.X;
+                TranslateY = Translate.Y;
+            }
+
             _drawingContext = DrawingGroup.Append();
             Logger.Trace($"{DrawingGroup.Bounds}");
 
@@ -927,55 +931,61 @@ namespace WpfTerminalControlLib
 
             if (NumRows != -1)
             {
-                Brush2.Viewport = new Rect(0, 0, 1.0 / eNewValue, 1.0 / NumRows);
-                Brush2.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                if (Brush2 != null)
+                {
+                    Brush2.Viewport = new Rect(0, 0, 1.0 / eNewValue, 1.0 / NumRows);
+                    Brush2.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                }
             }
 
 
-            var dc = DG2.Open();
-            var origin = new Point(0, 0);
-
-            var fontSize = FontSize * (xadvance / yadvance);
-            /* If font size computed relative to each individual line is too small (defined here as less than 16pt), increase font size
-                to 28pt. */
-            if (fontSize < 16) fontSize = 28;
-            var gli = _glyphTypeface.CharacterToGlyphMap['x'];
-            var xadvance1 = _glyphTypeface.AdvanceWidths[gli] * fontSize;
-            var yadvance1 = _glyphTypeface.AdvanceHeights[gli] * fontSize;
-
-            for (var i = 0; i < eNewValue; i++)
+            if (DG2 != null)
             {
-                var tt = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-                    Typeface, fontSize, Brushes.Black, _pixelsPerDip);
-                tt.SetFontWeight(FontWeights.ExtraBold);
-                dc.DrawText(tt, origin);
+                var dc = DG2.Open();
+                var origin = new Point(0, 0);
 
-                //origin.X += tt.Width;
+                var fontSize = FontSize * (xadvance / yadvance);
+                /* If font size computed relative to each individual line is too small (defined here as less than 16pt), increase font size
+                to 28pt. */
+                if (fontSize < 16) fontSize = 28;
+                var gli = _glyphTypeface.CharacterToGlyphMap['x'];
+                var xadvance1 = _glyphTypeface.AdvanceWidths[gli] * fontSize;
+                var yadvance1 = _glyphTypeface.AdvanceHeights[gli] * fontSize;
 
-
-                if (yadvance1 > CellWidth)
+                for (var i = 0; i < eNewValue; i++)
                 {
-                    var a = yadvance * 2;
-                    if (CellWidth * 2 - a < 5)
-                        origin.Y += a;
+                    var tt = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        Typeface, fontSize, Brushes.Black, _pixelsPerDip);
+                    tt.SetFontWeight(FontWeights.ExtraBold);
+                    dc.DrawText(tt, origin);
+
+                    //origin.X += tt.Width;
+
+
+                    if (yadvance1 > CellWidth)
+                    {
+                        var a = yadvance * 2;
+                        if (CellWidth * 2 - a < 5)
+                            origin.Y += a;
+                        else
+                            origin.Y += a + yadvance1;
+
+                        // while (a < CellWidth * 2)
+                        // {
+                        // a += 
+                        // }
+                        // while()
+                        // origin.Y += CellWidth / (yadvance );
+                        i++;
+                    }
                     else
-                        origin.Y += a + yadvance1;
+                    {
+                        origin.Y += CellWidth;
+                    }
+                }
 
-                    // while (a < CellWidth * 2)
-                    // {
-                    // a += 
-                    // }
-                    // while()
-                    // origin.Y += CellWidth / (yadvance );
-                    i++;
-                }
-                else
-                {
-                    origin.Y += CellWidth;
-                }
+                dc.Close();
             }
-
-            dc.Close();
 
             var width = eNewValue * CellWidth;
             Logger.Info($"{width}");

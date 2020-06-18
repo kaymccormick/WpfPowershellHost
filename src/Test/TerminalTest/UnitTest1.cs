@@ -35,13 +35,30 @@ namespace TerminalTest
         {
             var xx = new WpfTerminalControl();
             var w = CreateWindow();
+            xx.FontSize = 32.0;
+            xx.NumRows = 10;
+            xx.NumColumns = 40;
             w.Content = xx;
+
             xx.SetCellCharacter(0, 0,
                 'H', ConsoleColor.Black,
                 ConsoleColor.White);
             var chi = xx.GetCellCharacter(0, 0);
             Assert.Equal('H', chi.Character);
-            w.Show();
+
+            xx.SetCellCharacter(0, 1,
+                'X', ConsoleColor.Black,
+                ConsoleColor.White);
+            var chi2 = xx.GetCellCharacter(0, 1);
+            Assert.Equal('X', chi2.Character);
+
+            DoShowWindow(w);
+            
+        }
+
+        private void DoShowWindow(Window window)
+        {
+            window.ShowDialog();
         }
 
         private static Window CreateWindow()
@@ -65,7 +82,7 @@ namespace TerminalTest
             Dispatcher.PushFrame(frame);
         }
 
-        //[WpfFact]
+        [WpfFact]
         public void Test2()
         {
             _terminal = CreateWpfTerminalControl(out var w);
@@ -174,7 +191,7 @@ namespace TerminalTest
             w.KeyDown += (sender, args) =>
             {
                 var xx = new TerminalWriter(term);
-                var file = new StreamReader(@"C:\data\logs\client2\8612.json");
+                var file = new StreamReader(@"C:\data\logs\client2\12308.json");
                 try
                 {
                     while (file.EndOfStream == false)
@@ -190,7 +207,7 @@ namespace TerminalTest
                     throw;
                 }
             };
-            w.Show();
+            DoShowWindow(w);
         }
 
         [WpfFact]
@@ -205,7 +222,7 @@ namespace TerminalTest
             w.Loaded += (sender, args) =>
             {
                 var xx = new TerminalWriter(term);
-                var file = new StreamReader(@"C:\data\logs\client2\8612.json");
+                var file = new StreamReader(@"C:\temp\Program2.cs");
                 try
                 {
                     while (file.EndOfStream == false)
@@ -221,7 +238,7 @@ namespace TerminalTest
                     throw;
                 }
             };
-            w.Show();
+            w.ShowDialog();
         }
 
         [WpfFact]
@@ -366,10 +383,26 @@ namespace TerminalTest
         }
 
         /// <inheritdoc />
+        public override void Write(string value)
+        {
+            //_term.Dispatcher.Invoke(() => { _term.Write(value, false); });
+             _term.Write(value, false);
+        }
+
+        /// <inheritdoc />
+        public override void WriteLine(string value)
+        {
+            // _term.Dispatcher.Invoke(() => { _term.Write(value, true); }); 
+
+            _term.Write(value, true);
+        }
+
+        /// <inheritdoc />
         public override void Write(char value)
         {
             _written++;
-            _term.Dispatcher.Invoke(() => { _term.Write(value); });
+            _term.Write(value);
+            // _term.Dispatcher.Invoke(() => { _term.Write(value); });
         }
 
         /// <inheritdoc />

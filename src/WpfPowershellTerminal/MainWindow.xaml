@@ -1,0 +1,655 @@
+﻿<Window x:Class="WpfPowerShellTerminal.MainWindow"
+        Background="Transparent"
+        AllowsTransparency="True"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        WindowStyle="None"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        FontSize="20"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
+        mc:Ignorable="d"
+        Loaded="MainWindow_OnLoaded"
+        Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="900" Width="1200">
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="60" />
+  </WindowChrome.WindowChrome>
+  <Window.Resources>
+    <Style x:Key="FocusVisual">
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate>
+            <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1"
+                       Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="#606060" />
+    <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="#CDCDCD" />
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="#DADADA" />
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Border" Color="#DADADA" />
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Glyph" Color="#000000" />
+    <SolidColorBrush x:Key="ScrollBar.MouseOver.Thumb" Color="#A6A6A6" />
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="#606060" />
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="#606060" />
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="#606060" />
+    <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="#BFBFBF" />
+    <Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
+      <Setter Property="OverridesDefaultStyle" Value="true" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Focusable" Value="false" />
+      <Setter Property="IsTabStop" Value="false" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type RepeatButton}">
+            <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}"
+                       Width="{TemplateBinding Width}" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="ScrollBarButton" TargetType="{x:Type RepeatButton}">
+      <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Padding" Value="1" />
+      <Setter Property="Focusable" Value="false" />
+      <Setter Property="IsTabStop" Value="false" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type RepeatButton}">
+            <Border x:Name="border" Background="{StaticResource ScrollBar.Static.Background}" BorderThickness="1"
+                    BorderBrush="{StaticResource ScrollBar.Static.Border}" SnapsToDevicePixels="true">
+              <ContentPresenter x:Name="contentPresenter" Focusable="False"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" TargetName="border"
+                        Value="{StaticResource ScrollBar.MouseOver.Background}" />
+                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ScrollBar.MouseOver.Border}" />
+              </Trigger>
+              <Trigger Property="IsPressed" Value="true">
+                <Setter Property="Background" TargetName="border" Value="{StaticResource ScrollBar.Pressed.Background}" />
+                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ScrollBar.Pressed.Border}" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56" />
+                <Setter Property="Background" TargetName="border"
+                        Value="{StaticResource ScrollBar.Disabled.Background}" />
+                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ScrollBar.Disabled.Border}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="ScrollBarThumbVertical" TargetType="{x:Type Thumb}">
+      <Setter Property="OverridesDefaultStyle" Value="true" />
+      <Setter Property="IsTabStop" Value="false" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Thumb}">
+            <Rectangle x:Name="rectangle" Fill="{StaticResource ScrollBar.Static.Thumb}"
+                       Height="{TemplateBinding Height}" SnapsToDevicePixels="True" Width="{TemplateBinding Width}" />
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Fill" TargetName="rectangle" Value="{StaticResource ScrollBar.MouseOver.Thumb}" />
+              </Trigger>
+              <Trigger Property="IsDragging" Value="true">
+                <Setter Property="Fill" TargetName="rectangle" Value="{StaticResource ScrollBar.Pressed.Thumb}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="ScrollBarThumbHorizontal" TargetType="{x:Type Thumb}">
+      <Setter Property="OverridesDefaultStyle" Value="true" />
+      <Setter Property="IsTabStop" Value="false" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Thumb}">
+            <Rectangle x:Name="rectangle" Fill="{StaticResource ScrollBar.Static.Thumb}"
+                       Height="{TemplateBinding Height}" SnapsToDevicePixels="True" Width="{TemplateBinding Width}" />
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Fill" TargetName="rectangle" Value="{StaticResource ScrollBar.MouseOver.Thumb}" />
+              </Trigger>
+              <Trigger Property="IsDragging" Value="true">
+                <Setter Property="Fill" TargetName="rectangle" Value="{StaticResource ScrollBar.Pressed.Thumb}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="ScrollBarStyle1" TargetType="{x:Type ScrollBar}">
+      <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+      <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+      <Setter Property="Background" Value="{StaticResource ScrollBar.Static.Background}" />
+      <Setter Property="BorderBrush" Value="{StaticResource ScrollBar.Static.Border}" />
+      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+      <Setter Property="BorderThickness" Value="1,0" />
+      <Setter Property="Width" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
+      <Setter Property="MinWidth" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type ScrollBar}">
+            <Grid x:Name="Bg" SnapsToDevicePixels="true">
+              <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="12" />
+                <RowDefinition Height="0.00001*" />
+                <RowDefinition MaxHeight="12" />
+              </Grid.RowDefinitions>
+              <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+                      BorderBrush="{TemplateBinding BorderBrush}" Grid.Row="1" />
+              <RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}"
+                            IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="0"
+                            Style="{StaticResource ScrollBarButton}">
+                <Path x:Name="ArrowTop"
+                      Data="M 0,3 C0,3 0,5 0,5 0,5 3.5,1.5 3.5,1.5 3.5,1.5 7,5 7,5 7,5 7,4 7,4 7,3 3.5,0 3.5,0 3.5,0 0,3 0,3 z"
+                      Fill="{StaticResource ScrollBar.Static.Glyph}" Stretch="Uniform" />
+              </RepeatButton>
+              <Track Visibility="Collapsed" x:Name="PART_Track" IsEnabled="{TemplateBinding IsMouseOver}"
+                     IsDirectionReversed="false" Grid.Row="1">
+                <Track.DecreaseRepeatButton>
+                  <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}"
+                                Style="{StaticResource RepeatButtonTransparent}" />
+                </Track.DecreaseRepeatButton>
+                <Track.IncreaseRepeatButton>
+                  <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}"
+                                Style="{StaticResource RepeatButtonTransparent}" />
+                </Track.IncreaseRepeatButton>
+                <Track.Thumb>
+                  <Thumb Style="{StaticResource ScrollBarThumbVertical}" />
+                </Track.Thumb>
+              </Track>
+              <RepeatButton Grid.Row="2" x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}"
+                            IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}">
+                <Path x:Name="ArrowBottom"
+                      Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z"
+                      Fill="{StaticResource ScrollBar.Static.Glyph}" Stretch="Uniform" />
+              </RepeatButton>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                  <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineDownButton}" Value="true" />
+                  <Condition Binding="{Binding IsPressed, ElementName=PART_LineDownButton}" Value="true" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Fill" TargetName="ArrowBottom" Value="{StaticResource ScrollBar.Pressed.Glyph}" />
+              </MultiDataTrigger>
+              <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                  <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineUpButton}" Value="true" />
+                  <Condition Binding="{Binding IsPressed, ElementName=PART_LineUpButton}" Value="true" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Fill" TargetName="ArrowTop" Value="{StaticResource ScrollBar.Pressed.Glyph}" />
+              </MultiDataTrigger>
+              <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                  <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineDownButton}" Value="true" />
+                  <Condition Binding="{Binding IsPressed, ElementName=PART_LineDownButton}" Value="false" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Fill" TargetName="ArrowBottom" Value="{StaticResource ScrollBar.MouseOver.Glyph}" />
+              </MultiDataTrigger>
+              <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                  <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineUpButton}" Value="true" />
+                  <Condition Binding="{Binding IsPressed, ElementName=PART_LineUpButton}" Value="false" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Fill" TargetName="ArrowTop" Value="{StaticResource ScrollBar.MouseOver.Glyph}" />
+              </MultiDataTrigger>
+              <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Fill" TargetName="ArrowTop" Value="{StaticResource ScrollBar.Disabled.Glyph}" />
+                <Setter Property="Fill" TargetName="ArrowBottom" Value="{StaticResource ScrollBar.Disabled.Glyph}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="Orientation" Value="Horizontal">
+          <Setter Property="Width" Value="Auto" />
+          <Setter Property="MinWidth" Value="0" />
+          <Setter Property="Height" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}" />
+          <Setter Property="MinHeight"
+                  Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}" />
+          <Setter Property="BorderThickness" Value="0,1" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ScrollBar}">
+                <Grid x:Name="Bg" SnapsToDevicePixels="true">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                      MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}" />
+                    <ColumnDefinition Width="0.00001*" />
+                    <ColumnDefinition
+                      MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}" />
+                  </Grid.ColumnDefinitions>
+                  <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+                          BorderBrush="{TemplateBinding BorderBrush}" Grid.Column="1" />
+                  <RepeatButton x:Name="PART_LineLeftButton" Command="{x:Static ScrollBar.LineLeftCommand}"
+                                IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}">
+                    <Path x:Name="ArrowLeft"
+                          Data="M 3.18,7 C3.18,7 5,7 5,7 5,7 1.81,3.5 1.81,3.5 1.81,3.5 5,0 5,0 5,0 3.18,0 3.18,0 3.18,0 0,3.5 0,3.5 0,3.5 3.18,7 3.18,7 z"
+                          Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3" Stretch="Uniform" />
+                  </RepeatButton>
+                  <Track x:Name="PART_Track" Grid.Column="1" IsEnabled="{TemplateBinding IsMouseOver}">
+                    <Track.DecreaseRepeatButton>
+                      <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}"
+                                    Style="{StaticResource RepeatButtonTransparent}" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.IncreaseRepeatButton>
+                      <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}"
+                                    Style="{StaticResource RepeatButtonTransparent}" />
+                    </Track.IncreaseRepeatButton>
+                    <Track.Thumb>
+                      <Thumb Style="{StaticResource ScrollBarThumbHorizontal}" />
+                    </Track.Thumb>
+                  </Track>
+                  <RepeatButton x:Name="PART_LineRightButton" Command="{x:Static ScrollBar.LineRightCommand}"
+                                Grid.Column="2" IsEnabled="{TemplateBinding IsMouseOver}"
+                                Style="{StaticResource ScrollBarButton}">
+                    <Path x:Name="ArrowRight"
+                          Data="M 1.81,7 C1.81,7 0,7 0,7 0,7 3.18,3.5 3.18,3.5 3.18,3.5 0,0 0,0 0,0 1.81,0 1.81,0 1.81,0 5,3.5 5,3.5 5,3.5 1.81,7 1.81,7 z"
+                          Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3" Stretch="Uniform" />
+                  </RepeatButton>
+                </Grid>
+                <ControlTemplate.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineRightButton}" Value="true" />
+                      <Condition Binding="{Binding IsPressed, ElementName=PART_LineRightButton}" Value="true" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Fill" TargetName="ArrowRight" Value="{StaticResource ScrollBar.Pressed.Glyph}" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineLeftButton}" Value="true" />
+                      <Condition Binding="{Binding IsPressed, ElementName=PART_LineLeftButton}" Value="true" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Fill" TargetName="ArrowLeft" Value="{StaticResource ScrollBar.Pressed.Glyph}" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineRightButton}" Value="true" />
+                      <Condition Binding="{Binding IsPressed, ElementName=PART_LineRightButton}" Value="false" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Fill" TargetName="ArrowRight" Value="{StaticResource ScrollBar.MouseOver.Glyph}" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding IsMouseOver, ElementName=PART_LineLeftButton}" Value="true" />
+                      <Condition Binding="{Binding IsPressed, ElementName=PART_LineLeftButton}" Value="false" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Fill" TargetName="ArrowLeft" Value="{StaticResource ScrollBar.MouseOver.Glyph}" />
+                  </MultiDataTrigger>
+                  <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Fill" TargetName="ArrowLeft" Value="{StaticResource ScrollBar.Disabled.Glyph}" />
+                    <Setter Property="Fill" TargetName="ArrowRight" Value="{StaticResource ScrollBar.Disabled.Glyph}" />
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <BorderGapMaskConverter x:Key="BorderGapMaskConverter" />
+    <Style x:Key="GroupBoxStyle1" TargetType="{x:Type GroupBox}">
+      <Setter Property="BorderBrush" Value="#D5DFE5" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type GroupBox}">
+            <Grid SnapsToDevicePixels="true">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="6" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="6" />
+              </Grid.RowDefinitions>
+              <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+                      BorderBrush="Transparent" CornerRadius="4" Grid.ColumnSpan="4" Grid.Column="0" Grid.RowSpan="3"
+                      Grid.Row="1" />
+              <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="White" CornerRadius="4"
+                      Grid.ColumnSpan="4" Grid.RowSpan="3" Grid.Row="1">
+                <Border.OpacityMask>
+                  <MultiBinding Converter="{StaticResource BorderGapMaskConverter}" ConverterParameter="7">
+                    <Binding ElementName="Header" Path="ActualWidth" />
+                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}" />
+                  </MultiBinding>
+                </Border.OpacityMask>
+                <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="3">
+                  <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="White" CornerRadius="2" />
+                </Border>
+              </Border>
+              <Border Visibility="Collapsed" x:Name="Header" Grid.Column="1" Padding="3,1,3,0" Grid.RowSpan="2"
+                      Grid.Row="0">
+                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+              </Border>
+              <ContentPresenter Grid.ColumnSpan="2" Grid.Column="1" Margin="{TemplateBinding Padding}" Grid.Row="2"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC" />
+    <Style x:Key="TabControlStyle1" TargetType="{x:Type TabControl}">
+      <Setter Property="Padding" Value="2" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}" />
+      <Setter Property="BorderBrush" Value="{StaticResource TabItem.Selected.Border}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type TabControl}">
+            <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true"
+                  KeyboardNavigation.TabNavigation="Local">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="ColumnDefinition0" />
+                <ColumnDefinition x:Name="ColumnDefinition1" Width="0" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition x:Name="RowDefinition0" Height="Auto" />
+                <RowDefinition x:Name="RowDefinition1" Height="*" />
+              </Grid.RowDefinitions>
+              <TabPanel Visibility="Collapsed" x:Name="headerPanel" Background="Transparent" Grid.Column="0"
+                        IsItemsHost="true" Margin="2,2,2,0" Grid.Row="0" KeyboardNavigation.TabIndex="1"
+                        Panel.ZIndex="1" />
+              <Border x:Name="contentPanel" Background="{TemplateBinding Background}"
+                      BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}"
+                      Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1"
+                      KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.TabIndex="2">
+                <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent"
+                                  Margin="{TemplateBinding Padding}"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+              </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="TabStripPlacement" Value="Bottom">
+                <Setter Property="Grid.Row" TargetName="headerPanel" Value="1" />
+                <Setter Property="Grid.Row" TargetName="contentPanel" Value="0" />
+                <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
+                <Setter Property="Height" TargetName="RowDefinition1" Value="Auto" />
+                <Setter Property="Margin" TargetName="headerPanel" Value="2,0,2,2" />
+              </Trigger>
+              <Trigger Property="TabStripPlacement" Value="Left">
+                <Setter Property="Grid.Row" TargetName="headerPanel" Value="0" />
+                <Setter Property="Grid.Row" TargetName="contentPanel" Value="0" />
+                <Setter Property="Grid.Column" TargetName="headerPanel" Value="0" />
+                <Setter Property="Grid.Column" TargetName="contentPanel" Value="1" />
+                <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto" />
+                <Setter Property="Width" TargetName="ColumnDefinition1" Value="*" />
+                <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
+                <Setter Property="Height" TargetName="RowDefinition1" Value="0" />
+                <Setter Property="Margin" TargetName="headerPanel" Value="2,2,0,2" />
+              </Trigger>
+              <Trigger Property="TabStripPlacement" Value="Right">
+                <Setter Property="Grid.Row" TargetName="headerPanel" Value="0" />
+                <Setter Property="Grid.Row" TargetName="contentPanel" Value="0" />
+                <Setter Property="Grid.Column" TargetName="headerPanel" Value="1" />
+                <Setter Property="Grid.Column" TargetName="contentPanel" Value="0" />
+                <Setter Property="Width" TargetName="ColumnDefinition0" Value="*" />
+                <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto" />
+                <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
+                <Setter Property="Height" TargetName="RowDefinition1" Value="0" />
+                <Setter Property="Margin" TargetName="headerPanel" Value="0,2,2,2" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="TextElement.Foreground" TargetName="templateRoot"
+                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <StackPanel Visibility="Collapsed" Grid.Row="0" Orientation="Vertical"
+                DataContext="{Binding ElementName=Shell,Path=Runspace}">
+      <GroupBox Margin="10,0,10,0" Style="{DynamicResource GroupBoxStyle1}"
+                DataContext="{Binding ElementName=Shell,Path=Runspace}" Background="AliceBlue" Header="Runspace">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+          <TextBlock Margin="0,0,10,0" TextAlignment="Right" Grid.Column="0" Foreground="Gray" FontSize="14"
+                     Text="Runspace State" />
+          <TextBlock Grid.Row="1" Text="{Binding Path=RunspaceStateInfo}" />
+          <TextBlock Margin="0,0,10,0" TextAlignment="Right" Grid.Column="1" Foreground="Gray" FontSize="14"
+                     Text="Apartment State" />
+          <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=ApartmentState}" />
+          <TextBlock Margin="0,0,10,0" TextAlignment="Right" Grid.Column="2" Foreground="Gray" FontSize="14"
+                     Text="Runspace Name" />
+          <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding Path=Name}" />
+          <TextBlock Margin="0,0,10,0" Grid.Column="3" Foreground="Gray" FontSize="14" Text="Can Use Default" />
+          <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding Path=CanUseDefaultRunspace}" />
+          <TextBlock TextAlignment="Right" Grid.Column="4" Foreground="Gray" FontSize="14" Text="ID" />
+          <TextBlock TextAlignment="Right" Grid.Column="4" Grid.Row="1" Text="{Binding Path=Id}" />
+        </Grid>
+      </GroupBox>
+      <StackPanel Orientation="Horizontal">
+        <TextBlock x:Name="FSLocation" Text="{Binding SessionStateProxy.Path.CurrentFileSystemLocation}" />
+      </StackPanel>
+    </StackPanel>
+    <StackPanel>
+
+      <Glyphs
+        FontUri="C:\windows\fonts\GILSANUB.TTF"
+        FontRenderingEmSize="36"
+        StyleSimulations="BoldSimulation"
+        UnicodeString="Terminal"
+        Fill="Black"
+        OriginX="0"
+        OriginY="43" />
+
+    </StackPanel>
+    <TextBlock VerticalAlignment="Center" Grid.Row="0" Text="Terminal" FontSize="24pt"
+               FontFamily="Gill Sans Ultra Bold"
+               Foreground="White"
+               Background="Transparent" Height="40" />
+    <StackPanel Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="10" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold" />
+        <StackPanel HorizontalAlignment="Center">
+          <TextBlock Margin="10,0,10,0" FontSize="14" Text="FontSize" Foreground="Gray" />
+          <TextBox Margin="10,0,0,0" Text="{Binding FontSize,Mode=TwoWay}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Margin="10,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumColumns}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Rows" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumRows}" />
+        </StackPanel>
+        <TextBlock Margin="10" Text="Cursor" />
+        <StackPanel>
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="Col" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CursorColumn}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Row" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CursorRow}" />
+        </StackPanel>
+
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,0,0" TextAlignment="Right" FontSize="14" Text="ViewX" Foreground="Gray" />
+          <StackPanel Orientation="Horizontal">
+            <TextBox HorizontalContentAlignment="Right" x:Name="ViewX" Text="{Binding Path=ViewX,Mode=TwoWay}"
+                     Width="40" />
+            <ScrollBar Value="{Binding Path=ViewX,Mode=TwoWay}" Minimum="-20" Maximum="100" SmallChange="1"
+                       Style="{DynamicResource ScrollBarStyle1}" Orientation="Vertical" />
+          </StackPanel>
+        </StackPanel>
+
+        <StackPanel Margin="10,0,10,0">
+          <TextBlock TextAlignment="Right" FontSize="14" Text="ViewY" Foreground="Gray" />
+          <StackPanel Orientation="Horizontal">
+            <TextBox HorizontalContentAlignment="Right" x:Name="ViewY" Text="{Binding Path=ViewY,Mode=TwoWay}"
+                     Width="40" />
+            <ScrollBar Value="{Binding Path=ViewY,Mode=TwoWay}" Minimum="-20" Maximum="100" SmallChange="1"
+                       Style="{DynamicResource ScrollBarStyle1}" Orientation="Vertical" />
+          </StackPanel>
+        </StackPanel>
+        <CheckBox VerticalContentAlignment="Center" Content="LineMode" IsChecked="{Binding LineMode}" />
+        <CheckBox VerticalContentAlignment="Center" Margin="10,0,0,0" Content="Input Only"
+                  IsChecked="{Binding InputOnly}" />
+        <StackPanel Margin="15,0,10,0">
+          <TextBlock Margin="0,0,0,0" FontSize="14" TextAlignment="Right" Text="translateX" Foreground="Gray" />
+          <TextBlock Margin="0,0,0,0" TextAlignment="Right" Text="{Binding TranslateX,StringFormat=N2}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock TextAlignment="Right" FontSize="14" Text="translateY" Foreground="Gray" />
+          <TextBlock TextAlignment="Right" Margin="0,0,0,0" Text="{Binding TranslateY,StringFormat=N2}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0" Orientation="Horizontal">
+          <TextBlock TextAlignment="Right" Margin="0,0,10,0" FontSize="14" TextWrapping="Wrap" Width="80"
+                     Text="Visible row count" Foreground="Gray" />
+          <TextBlock VerticalAlignment="Bottom" TextAlignment="Right" Margin="10,0,0,0"
+                     Text="{Binding VisibleRowCount}" />
+        </StackPanel>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <StackPanel>
+          <TextBlock FontSize="14" Text="RectWidth" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding RectWidth,StringFormat=N1}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="RectHeight" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding RectHeight,StringFormat=N1}" />
+        </StackPanel>
+        <StackPanel>
+          <TextBlock FontSize="14" Text="BrushViewportX" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportX}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="BrushViewportY" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportY}" />
+        </StackPanel>
+        <StackPanel>
+          <TextBlock FontSize="14" Text="BrushViewportWidth" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportWidth}" />
+        </StackPanel>
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="BrushViewportHeight" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding BrushViewportHeight}" />
+        </StackPanel>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding CharUnderCursor}" />
+      </StackPanel>
+    </StackPanel>
+    <wpfTerminalControlLib:WpfTerminalControl NumReservedColumns="0" FontSize="20" DiagnosticsEnabled="True"
+                                              ForegroundColor="Green"
+                                              Background="Black" FontWeight="Bold"
+                                              BackgroundColor="Black" AutoResize="True" Grid.Row="2"
+                                              CursorBrush="DarkOrange"
+                                              x:Name="Terminal" FontFamily="Lucida Console"
+                                              BorderBrush="Green" BorderThickness="1" Focusable="True" />
+    <!-- ReSharper disable once Xaml.MissingGridIndex -->
+    <wpfTerminalControlLib:WrappedPowerShell Visibility="Collapsed" x:Name="Shell" Terminal="{x:Reference Terminal}" />
+    <wpfTerminalControlLib:WpfInputLine IsEnabled="False" LineMode="True" InputOnly="True" CursorBrush="Azure"
+                                        x:Name="Input" BorderBrush="Red" Visibility="Collapsed"
+                                        BorderThickness="1" AutoResize="True" Grid.Row="3" Focusable="True">
+      <wpfTerminalControlLib:WpfInputLine.CommandBindings>
+        <CommandBinding Command="Paste" Executed="PasteExecuted" />
+      </wpfTerminalControlLib:WpfInputLine.CommandBindings>
+      <wpfTerminalControlLib:WpfInputLine.InputBindings>
+        <KeyBinding Key="V" Modifiers="Control" Command="Paste" />
+      </wpfTerminalControlLib:WpfInputLine.InputBindings>
+    </wpfTerminalControlLib:WpfInputLine>
+    <StackPanel Orientation="Horizontal" Grid.Row="4" DataContext="{Binding ElementName=Input}" Grid.ColumnSpan="2"
+                Visibility="Collapsed">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="10" Text="Input" />
+        <StackPanel>
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding NumColumns}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Rows" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=NumRows}" />
+        </StackPanel>
+        <TextBlock Margin="10" Text="Cursor" />
+        <StackPanel>
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="Col" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=CursorColumn}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="Row" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=CursorRow}" />
+        </StackPanel>
+
+        <StackPanel Margin="25,0,0,0">
+          <TextBlock Margin="0,0,10,0" FontSize="14" Text="ViewX" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding Path=ViewX}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontSize="14" Text="ViewY" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ViewY}" />
+        </StackPanel>
+        <CheckBox Content="LineMode" IsChecked="{Binding LineMode}" />
+        <CheckBox Content="Input Only" IsChecked="{Binding InputOnly}" />
+      </StackPanel>
+    </StackPanel>
+    <StatusBar Grid.Row="4" Visibility="Collapsed">
+      <TextBlock x:Name="MainStatus" Width="200" />
+      <ProgressBar Width="200" Maximum="100" x:Name="ProgressBar" />
+    </StatusBar>
+    <DataGrid Visibility="Collapsed" Grid.Column="1" Grid.Row="1"
+              ItemsSource="{Binding ElementName=Terminal,Path=InfoRecords}" />
+  </Grid>
+</Window>
