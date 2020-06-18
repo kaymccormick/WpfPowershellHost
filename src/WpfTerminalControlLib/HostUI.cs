@@ -128,7 +128,6 @@ namespace PowerShellShared
                 _wpfTerminalControl.Dispatcher.Invoke(() => { _terminalInterface.WriteErrorLine(value); });
         }
 
-
         public override void WriteDebugLine(string message)
         {
             _wpfTerminalControl.Dispatcher.Invoke(() => { _terminalInterface.WriteDebugLine(message); });

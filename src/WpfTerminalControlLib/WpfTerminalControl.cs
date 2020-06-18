@@ -44,15 +44,26 @@ namespace WpfTerminalControlLib
             new PropertyMetadata(default(string), OnWindowTitleChanged));
 
         public static readonly DependencyProperty ViewXProperty = DependencyProperty.Register(
-            "ViewX", typeof(int), typeof(WpfTerminalControl), new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender, OnViewXChanged));
+            "ViewX", typeof(int), typeof(WpfTerminalControl), new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender,  OnViewXChanged));
 
         public static readonly DependencyProperty ViewYProperty = DependencyProperty.Register(
-            "ViewY", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewYChanged));
+            "ViewY", typeof(int), typeof(WpfTerminalControl), new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender|FrameworkPropertyMetadataOptions.AffectsArrange|FrameworkPropertyMetadataOptions.AffectsMeasure,  OnViewYChanged));
 
         public static readonly DependencyProperty CursorRowProperty = DependencyProperty.Register(
             "CursorRow", typeof(int), typeof(WpfTerminalControl),
             new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender,
-                OnCursorRowChanged));
+                OnCursorRowChanged, CoerceCursorRow));
+
+        private static object CoerceCursorRow(DependencyObject d, object basevalue)
+        {
+            // int row = (int) basevalue;
+            // WpfTerminalControl w = d;
+            // if (w.ViewY + w.NumRows <= row)
+            // {
+
+            // }
+            return basevalue;
+        }
 
         public static readonly DependencyProperty BackgroundColorProperty = DependencyProperty.Register(
             "BackgroundColor", typeof(ConsoleColor), typeof(WpfTerminalControl),
@@ -302,26 +313,36 @@ namespace WpfTerminalControlLib
 
             var cellOrigin = GetCellOrigin(row, col);
             _debug($"cell origin is {cellOrigin.X:N2} {cellOrigin.Y:N2}");
-            _drawingContext.DrawRectangle(colors[(int) backgroundColor], null,
-                new Rect(cellOrigin, new Size(xadvance, yadvance)));
-            var x1 = new FormattedText(char1.ToString(), Thread.CurrentThread.CurrentUICulture,
-                FlowDirection.LeftToRight, Typeface, (double) GetValue(FontSizeProperty),
-                colors[(int) foregroundColor],
-                _pixelsPerDip);
-            _drawingContext.DrawText(x1, cellOrigin);
-            Logger.Trace($"Drawtext {char1} at {cellOrigin}");
-            Trace.WriteLine($"{cellOrigin}");
-            _drawingContext.Close();
-            if (Translate != null)
+
+
+            if (_drawingContext == null)
             {
-                Translate.X = DrawingGroup.Bounds.Left;
-                CalcTransY();
-                TranslateX = Translate.X;
-                TranslateY = Translate.Y;
+                _drawingContext = DrawingGroup.Append();
             }
+                _drawingContext.DrawRectangle(colors[(int) backgroundColor], null,
+                    new Rect(cellOrigin, new Size(xadvance, yadvance)));
+                
+            var x1 = new FormattedText(char1.ToString(), Thread.CurrentThread.CurrentUICulture,
+                    FlowDirection.LeftToRight, Typeface, (double) GetValue(FontSizeProperty),
+                    colors[(int) foregroundColor],
+                    _pixelsPerDip);
+                _drawingContext.DrawText(x1, cellOrigin);
+                Logger.Trace($"Drawtext {char1} at {cellOrigin}");
+                Trace.WriteLine($"{cellOrigin}");
+                _drawingContext.Close();
+                _drawingContext = null;
+
+                // if (Translate != null)
+                // {
+                    // Translate.X = DrawingGroup.Bounds.Left;
+                    // CalcTransY();
+                    // TranslateX = Translate.X;
+                    // TranslateY = Translate.Y;
+                // }
+            
 
 
-            _drawingContext = DrawingGroup.Append();
+            // _drawingContext = DrawingGroup.Append();
             Logger.Trace($"{DrawingGroup.Bounds}");
 
 
@@ -348,6 +369,8 @@ namespace WpfTerminalControlLib
             if (VScrollBar != null) VScrollBar.Minimum = 0;
             Border = GetTemplateChild("Bd") as Border;
             Translate = GetTemplateChild("Translate") as TranslateTransform;
+            //Translate = new TranslateTransform();
+            DrawingGroup.Transform = Translate;
             Brush1 = (DrawingBrush) GetTemplateChild("DrawingBrush");
             Brush2 = (DrawingBrush) GetTemplateChild("DrawingBrush2");
             Minibrush = (DrawingBrush) GetTemplateChild("MiniBrush");
@@ -357,8 +380,9 @@ namespace WpfTerminalControlLib
             Zoombrush.Drawing = DrawingGroup;
             // _brush.Viewport = new Rect(0, 0, NumColumns * CellWidth, NumRows * CellHeight);
             // _brush.ViewportUnits = BrushMappingMode.Absolute;
+
             // _brush.Viewbox = new Rect(0, 0, NumColumns * CellWidth, NumRows * CellHeight);
-            // _brush.ViewboxUnits = BrushMappingMode.Absolute;
+             // _brush.ViewboxUnits = BrushMappingMode.Absolute;
 
             SetBinding(BrushViewportXProperty, new Binding("Viewport.X") {Source = Brush1});
             SetBinding(BrushViewportYProperty, new Binding("Viewport.Y") {Source = Brush1});
@@ -371,13 +395,37 @@ namespace WpfTerminalControlLib
             // Popup1.MouseLeave += PopupOnMouseLeave;
 
             Rect1 = (Rectangle) GetTemplateChild("Rect");
+            if(NumRows!=-1){
+            var height = NumRows * CellHeight;
+            if (Rect1 != null) Rect1.Height = height;
+            }
+
+            if (NumColumns != -1)
+            {
+                var width = NumColumns * CellWidth;
+                Logger.Info($"{width}");
+                if (Rect1 != null) Rect1.Width = width;
+            }
+
+
             Rect2 = (Rectangle) GetTemplateChild("Rect2");
             ColLabel = (Rectangle) GetTemplateChild("ColLabel");
+          
+            ColLabel2 = (Rectangle)GetTemplateChild("ColLabel2");
             DG0 = (DrawingGroup) GetTemplateChild("ColLabel1DrawingGroup");
             ColLabel2DrawingGroup = (DrawingGroup)GetTemplateChild("ColLabel2DrawingGroup");
             ColLabel2Transform = (TranslateTransform) GetTemplateChild("ColLabel2Transform");
             DG2 = (DrawingGroup) GetTemplateChild("DG2");
 
+
+            if (ColLabel2 != null && NumColumns != -1)
+            {
+                DrawColLabel2(NumColumns);
+            }
+            if (ColLabel != null && NumColumns != -1)
+            {
+                DrawColLabel1(NumColumns);
+            }
 #if ROWDGMODE
             NewMethod();
 #endif
@@ -386,6 +434,8 @@ namespace WpfTerminalControlLib
             CoerceValue(CursorRowProperty);
             UpdateStates(true);
         }
+
+        public Rectangle ColLabel2 { get; set; }
 
         public TranslateTransform ColLabel2Transform { get; set; }
 
@@ -867,9 +917,12 @@ namespace WpfTerminalControlLib
 
             if (NumColumns != -1)
             {
-                Brush2.Viewport = new Rect(0, 0, 1.0 / NumColumns, 1.0
-                                                                   / eNewValue);
-                Brush2.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                if (Brush2 != null)
+                {
+                    Brush2.Viewport = new Rect(0, 0, 1.0 / NumColumns, 1.0
+                                                                       / eNewValue);
+                    Brush2.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                }
             }
 
             if (eNewValue > eOldValue && NumColumns != -1)
@@ -889,9 +942,6 @@ namespace WpfTerminalControlLib
             // _brush.ViewboxUnits = BrushMappingMode.Absolute;
             // }
 
-            if (!UiInitialized)
-                return;
-
             // var dc = DG2.Open();
             // var solidColorBrush = new SolidColorBrush(Colors.Gray) { Opacity = .5 };
             // dc.DrawRectangle(solidColorBrush, null, new Rect(new Point(0, 0), new Size(1, 0.5)));
@@ -899,7 +949,7 @@ namespace WpfTerminalControlLib
             // dc.Close();
 
             var height = eNewValue * CellHeight;
-            Rect1.Height = height;
+            if (Rect1 != null) Rect1.Height = height;
 #if ROWDGMODE
             Redraw();
 #endif
@@ -948,55 +998,56 @@ namespace WpfTerminalControlLib
                 }
             }
 
+            DrawColLabel1(eNewValue);
+
+
+            DrawColLabel2(eNewValue);
+
+            var width = eNewValue * CellWidth;
+            Logger.Info($"{width}");
+            if (Rect1 != null) Rect1.Width = width;
+        }
+
+        private void DrawColLabel1(int eNewValue)
+        {
             if (DG0 != null)
             {
                 var dc = DG0.Open();
                 var origin = new Point(0, 0);
 
-                var fontSize = FontSize * (xadvance / yadvance);
+
                 /* If font size computed relative to each individual line is too small (defined here as less than 16pt), increase font size
                 to 28pt. */
-                if (fontSize < 16) fontSize = 28;
-                var gli = _glyphTypeface.CharacterToGlyphMap['x'];
-                var xadvance1 = _glyphTypeface.AdvanceWidths[gli] * fontSize;
-                var yadvance1 = _glyphTypeface.AdvanceHeights[gli] * fontSize;
 
                 for (var i = 0; i < eNewValue; i++)
                 {
-                    var tt = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-                        Typeface, fontSize, Brushes.Black, _pixelsPerDip);
+                    var textToFormat = i.ToString("D2")[0].ToString();
+                    var tt = new FormattedText(textToFormat, CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        Typeface, FontSize, Brushes.Black, _pixelsPerDip);
                     tt.SetFontWeight(FontWeights.ExtraBold);
                     dc.DrawText(tt, origin);
+                    origin.X += xadvance;
+                }
 
-                    //origin.X += tt.Width;
-
-
-                    if (yadvance1 > CellWidth)
-                    {
-                        var a = yadvance * 2;
-                        if (CellWidth * 2 - a < 5)
-                            origin.Y += a;
-                        else
-                            origin.Y += a + yadvance1;
-
-                        // while (a < CellWidth * 2)
-                        // {
-                        // a += 
-                        // }
-                        // while()
-                        // origin.Y += CellWidth / (yadvance );
-                        i++;
-                    }
-                    else
-                    {
-                        origin.Y += CellWidth;
-                    }
+                origin.X = 0;
+                origin.Y += yadvance;
+                for (var i = 0; i < eNewValue; i++)
+                {
+                    var tt = new FormattedText(i.ToString("D2")[1].ToString(), CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        Typeface, FontSize, Brushes.Black, _pixelsPerDip);
+                    tt.SetFontWeight(FontWeights.ExtraBold);
+                    dc.DrawText(tt, origin);
+                    origin.X += xadvance;
                 }
 
                 dc.Close();
             }
+        }
 
-
+        private void DrawColLabel2(int eNewValue)
+        {
             if (ColLabel2DrawingGroup != null)
             {
                 var dc = ColLabel2DrawingGroup.Open();
@@ -1044,10 +1095,6 @@ namespace WpfTerminalControlLib
 
                 dc.Close();
             }
-
-            var width = eNewValue * CellWidth;
-            Logger.Info($"{width}");
-            if (Rect1 != null) Rect1.Width = width;
         }
 
         public DrawingGroup ColLabel2DrawingGroup { get; set; }
@@ -1274,9 +1321,11 @@ namespace WpfTerminalControlLib
         {
             var excessWidth = 0.0;
             VScrollBar.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            excessWidth += VScrollBar.DesiredSize.Width + BorderThickness.Left + BorderThickness.Right +
-                           (DiagnosticsEnabled ? MiniRect.ActualWidth : 0);
-            var excessHeight = BorderThickness.Top + BorderThickness.Bottom + ColLabel.ActualHeight;
+            MiniRect.Measure(constraint);
+            excessWidth += VScrollBar.DesiredSize.Width + BorderThickness.Left + BorderThickness.Right;// (DiagnosticsEnabled ? MiniRect.DesiredSize.Width: 0);
+            ColLabel.Measure(constraint);
+            ColLabel2.Measure(constraint);
+            var excessHeight = BorderThickness.Top + BorderThickness.Bottom + ColLabel.DesiredSize.Height+ ColLabel2.DesiredSize.Height;
             if (Border != null)
             {
                 excessHeight += Border.BorderThickness.Top + Border.BorderThickness.Bottom;
@@ -1328,15 +1377,28 @@ namespace WpfTerminalControlLib
             return constraint;
         }
 
+        public Rectangle ColLabel2on { get; set; }
+
         /// <inheritdoc />
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             _debug($"{nameof(ArrangeOverride)}({arrangeBounds}");
             var sz = InternalMeasure(arrangeBounds, out var cols, out var rows);
-            NumRows = rows;
-            NumColumns = cols;
+            if (AutoResize)
+            {
+                NumRows = rows;
+                NumColumns = cols;
+            }
+
             (GetTemplateChild("Border") as Border)?.Arrange(new Rect(arrangeBounds));
+            (GetTemplateChild("Grid1") as Border)?.Arrange(new Rect(arrangeBounds));
             return arrangeBounds;
+        }
+
+        /// <inheritdoc />
+        public override void EndInit()
+        {
+            base.EndInit();
         }
 
         public double CellHeight
@@ -1428,7 +1490,7 @@ namespace WpfTerminalControlLib
         protected virtual void OnCursorColumnChanged(int oldValue, int newValue)
         {
             _debug("Cursor column now " + newValue);
-            _curOrigin.X = newValue * CellWidth;
+            //_curOrigin.X = newValue * CellWidth;
             CharUnderCursor = newValue < NumColumns ? GetCharUnderCursor(CursorRow, newValue) : '\0';
         }
 
@@ -1451,7 +1513,11 @@ namespace WpfTerminalControlLib
 
         protected virtual void OnCursorRowChanged(int oldValue, int newValue)
         {
-            _curOrigin.Y = newValue * CellHeight;
+            //_curOrigin.Y = newValue * CellHeight;
+            if (ViewY + NumRows <= newValue)
+            {
+                ViewY = newValue - NumRows + 1;
+            }
             Debug.WriteLine("Row: " + newValue);
             CharUnderCursor = newValue < NumRows ? GetCharUnderCursor(newValue, CursorColumn) : '\0';
         }
@@ -1459,24 +1525,25 @@ namespace WpfTerminalControlLib
 
         private void OnViewYChanged(int oldValue, int newValue)
         {
-            if (Translate != null)
-            {
-                // Translate.Y = -1 * DrawingGroup.Bounds.Top + ViewY * CellHeight;
-                // Translate.Y = (NumRows * CellHeight - DrawingGroup.Bounds.Height)
-                
-                TranslateY = Translate.Y;
-                CalcTransY();
-                _debug("View Y = " + newValue);
-                _debug("Translate y is " + Translate.Y);
-            }
-
-            // if (_brush != null)
+            // if (Translate != null)
             // {
-            // _brush.Viewport = new Rect(-1 * ViewX * CellWidth,-1 * newValue * CellHeight,  NumColumns * CellWidth, NumRows * CellHeight);
-            // _brush.ViewportUnits = BrushMappingMode.Absolute;
-            // _brush.Viewbox = new Rect(0, 0, NumColumns * CellWidth, (newValue + NumRows) * CellHeight);
-            // _brush.ViewboxUnits = BrushMappingMode.Absolute;
+                
+                // Translate.Y = -1 * DrawingGroup.Bounds.Top + ViewY * CellHeight;
+                // Translate.Y = (NumRows * CellHeight - DrawingGroup.Bounds.Height);
+                // CalcTransY();
+                // TranslateY = Translate.Y;
+                
+                // _debug("View Y = " + newValue);
+                // _debug("Translate y is " + Translate.Y);
             // }
+
+            if (_brush != null)
+            {
+            _brush.Viewbox = new Rect(  ViewX * CellWidth,  newValue * CellHeight,  NumColumns * CellWidth, NumRows * CellHeight);
+            _brush.ViewportUnits = BrushMappingMode.Absolute;
+            _brush.Viewport = new Rect(0, 0, NumColumns * CellWidth, (NumRows) * CellHeight);
+            _brush.ViewboxUnits = BrushMappingMode.Absolute;
+            }
         }
 
         public int ViewX
@@ -1788,10 +1855,11 @@ namespace WpfTerminalControlLib
             if (_buffer2.Count <= row)
                 return String.Empty;
             var sb = new StringBuilder();
-            for (var i = NumReservedColumns; i < NumColumns && _buffer2[row][i] != '\0'; i++)
-                if (i < _buffer2[row].Count)
+            var chars = _buffer2[row];
+            for (var i = NumReservedColumns; i < NumColumns && chars[i] != '\0'; i++)
+                if (i < chars.Count)
                 {
-                    var ch = _buffer2[row][i];
+                    var ch = chars[i];
                     sb.Append(ch);
                 }
 
@@ -1822,7 +1890,7 @@ namespace WpfTerminalControlLib
 
         private int TerminalRowToBufferRow(in int row)
         {
-            return row + ViewY;
+            return row;
         }
 
         private void CheckCursorForOverrun()
@@ -2217,7 +2285,14 @@ AddRowsToBuffer(CursorRow + 1);
                         Typeface,
                         (double) GetValue(FontSizeProperty), foreground,
                         _pixelsPerDip);
-                    _drawingContext.DrawText(text1, _curOrigin);
+
+                    if (_drawingContext == null)
+                    {
+                        _drawingContext = DrawingGroup.Append();
+                    }
+
+                        _drawingContext.DrawText(text1, _curOrigin);
+                    
                     newCursorColumn = NumReservedColumns;
                     _curOrigin.X = newCursorColumn * CellWidth;
                     _curOrigin.Y += CellHeight;
@@ -2231,10 +2306,16 @@ AddRowsToBuffer(CursorRow + 1);
                     (double) GetValue(FontSizeProperty), foreground,
                     _pixelsPerDip);
 
-                _drawingContext.DrawText(text, _curOrigin);
+                if (_drawingContext == null)
+                {
+                    _drawingContext = DrawingGroup.Append();
+                }
 
+                    _drawingContext.DrawText(text, _curOrigin);
             }
-       
+
+            if (_drawingContext != null) _drawingContext.Close();
+            _drawingContext = null;
             if (doWriteNewLine)
             {
                 _curOrigin.Y += CellHeight;
@@ -2250,27 +2331,28 @@ AddRowsToBuffer(CursorRow + 1);
                 CursorColumn = newCursorColumn;
             }
 
-            _drawingContext.Close();
 
+            Brush1.Drawing = DrawingGroup;
+            InvalidateVisual();
             var message =
                 $"( {DrawingGroup.Bounds.X:N2}, {DrawingGroup.Bounds.Y:N2} ) - ({DrawingGroup.Bounds.Right:N2}, {DrawingGroup.Bounds.Bottom:N2} )";
             Debug.WriteLine(message);
-            if (newCursorRow == ViewY + NumRows)
-            {
-                ViewY += 1;
-            }
+            // if (newCursorRow == ViewY + NumRows)
+            // {
+                // ViewY += 1;
+            // }
 
-            if (Translate != null)
-            {
-                Translate.X = DrawingGroup.Bounds.Left;
+            // if (Translate != null)
+            // {
+                // Translate.X = DrawingGroup.Bounds.Left;
                 // 0 until end
-             CalcTransY();
-                //Translate.Y = DrawingGroup.Bounds.Bottom;
-                TranslateX = Translate.X;
-                TranslateY = Translate.Y;
-            }
+             // CalcTransY();
+                // Translate.Y = DrawingGroup.Bounds.Bottom;
+                // TranslateX = Translate.X;
+                // TranslateY = Translate.Y;
+            // }
 
-            _drawingContext = DrawingGroup.Append();
+            //_drawingContext = DrawingGroup.Append();
         }
     }
 

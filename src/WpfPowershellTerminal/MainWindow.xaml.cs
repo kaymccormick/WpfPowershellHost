@@ -198,6 +198,11 @@ namespace WpfPowerShellTerminal
             // var transparencyConverter = new TransparencyConverter(this);
             // transparencyConverter.MakeTransparent();
         }
+
+        private void Ival(object sender, RoutedEventArgs e)
+        {
+            Terminal.InvalidateVisual();
+        }
     }
 
     public class MyCommandCmdlet : PSCmdlet

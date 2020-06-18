@@ -20,7 +20,7 @@ namespace WpfCustomControlLibrary1
         private int _cursorColumn;
         private int _cursorRow;
         private ConsoleColor _backgroundColor;
-        private int columnOffset = 5;
+        private int columnOffset = 0;
         private int rowOffset = 0;
         private int _numColumns1;
         private int _numRows1;

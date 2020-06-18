@@ -589,7 +589,8 @@
     </StackPanel>
     <wpfTerminalControlLib:WpfTerminalControl NumReservedColumns="0" FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Green"
                                               Background="Black" FontWeight="Bold"
-                                              BackgroundColor="Black" AutoResize="True" Grid.Row="2"
+                                              NumRows="10"
+                                              BackgroundColor="Black" AutoResize="False" Grid.Row="2"
                                               CursorBrush="DarkOrange"
                                               x:Name="Terminal" FontFamily="Lucida Console"
                                               BorderBrush="Green" BorderThickness="1" Focusable="True" />

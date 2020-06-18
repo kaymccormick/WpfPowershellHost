@@ -31,14 +31,12 @@
                 <VisualState Name="Unfocused" />
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" x:Name="Grid1">
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto"/>
               </Grid.ColumnDefinitions>
-
-
+              <Grid.RowDefinitions><RowDefinition Height="*"></RowDefinition></Grid.RowDefinitions>
               <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       x:Name="Bd">
                 <Grid>
@@ -49,17 +47,15 @@
                   </Grid.RowDefinitions>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
-                  <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="20" Stroke="Aqua" StrokeThickness="1">
+                  <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="40" Stroke="Aqua" StrokeThickness="1">
                     <Rectangle.Fill>
                       <DrawingBrush AlignmentX="Left" AlignmentY="Bottom"
                                     Stretch="Fill"
                                     Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
                         <DrawingBrush.Drawing>
                           <DrawingGroup x:Name="ColLabel1DrawingGroup">
-                            <DrawingGroup.Transform>
-                              <RotateTransform Angle="270" />
-                            </DrawingGroup.Transform>
                           </DrawingGroup>
                         </DrawingBrush.Drawing>
                       </DrawingBrush>
@@ -91,9 +87,9 @@
                   <Rectangle Grid.Row="2" x:Name="Rect" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Rectangle.Fill>
                       <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" Stretch="None"
-                                    Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
+  >
                         <DrawingBrush.Transform>
-                          <TranslateTransform x:Name="Translate" />
+                          <TranslateTransform x:Name="Translate" X="0" Y="0" />
                         </DrawingBrush.Transform>
 
                       </DrawingBrush>
@@ -131,11 +127,10 @@
                     </Rectangle.Fill>
 
                   </Rectangle>
-
+                  <ScrollBar Grid.Row="2" Grid.Column="1" x:Name="VScrollBar" Orientation="Vertical" SmallChange="1" LargeChange="5" />
                 </Grid>
               </Border>
-              <ScrollBar Grid.Column="1" x:Name="VScrollBar" Orientation="Vertical" SmallChange="1" LargeChange="5" />
-              <Grid Grid.Column="2" Width="240"
+              <Grid Grid.Column="1" 
                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent},Path=DiagnosticsEnabled, Converter={StaticResource B}}">
                 <Rectangle MinWidth="100" x:Name="MiniRect" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                   <Rectangle.Fill>
@@ -152,7 +147,7 @@
                   </Rectangle>
                 </Popup>
               </Grid>
-              <Rectangle Name="FocusVisual" Grid.ColumnSpan="3"
+              <Rectangle Name="FocusVisual" Grid.ColumnSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                          Stroke="Silver" StrokeThickness="3"
                          RadiusX="3" RadiusY="3"
                          Visibility="Collapsed" />

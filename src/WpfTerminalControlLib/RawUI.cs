@@ -26,8 +26,8 @@ namespace PowerShellShared
 #endif
 
         private ConsoleBuffer buf;
-        private readonly Size _maxWindowSize = new Size(80, 25);
-        private readonly Size _maxPhysicalWindowSize = new Size(80, 25);
+        private readonly Size _maxWindowSize = new Size(0, 0);
+        private readonly Size _maxPhysicalWindowSize = new Size(0, 0);
 
 
         private string _windowTitle;
@@ -50,10 +50,21 @@ namespace PowerShellShared
             TerminalCharacteristics.AddNumColumnsChangedEventHandler(terminalInterface,
                 TerminalInterfaceOnNumColumnsChanged);
             TerminalCharacteristics.AddNumRowsChangedEventHandler(terminalInterface, TerminalInterfaceOnNumRowsChanged);
-
             TermInterface = terminalInterface;
+            var rows = TerminalCharacteristics.GetNumRows(terminalInterface);
+            if (rows != -1)
+            {
+                numRows = rows;
+            }
+            var cols= TerminalCharacteristics.GetNumColumns(terminalInterface);
+            if (cols!= -1)
+            {
+                numCols= cols;
+            }
 
-            buf = new ConsoleBuffer {Buf = NewBufferCellArray(new Size(80, 25), new BufferCell())};
+
+            if(numCols.HasValue && numRows.HasValue)
+            buf = new ConsoleBuffer {Buf = NewBufferCellArray(new Size(numCols.Value, numRows.Value), new BufferCell())};
         }
 
         private void TerminalInterfaceOnNumColumnsChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
