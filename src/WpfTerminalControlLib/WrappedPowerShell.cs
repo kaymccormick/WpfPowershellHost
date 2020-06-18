@@ -118,7 +118,7 @@ namespace WpfTerminalControlLib
             var owner = ( WrappedPowerShell ) d ;
             owner.RaiseEvent ( ev ) ;
 
-            await owner.ExecuteHelperAsync("get-location", null);
+            // await owner.ExecuteHelperAsync("get-location", null);
         }
 
         public DateTime CreateDateTime { get ; set ; }
@@ -223,6 +223,7 @@ namespace WpfTerminalControlLib
 
         private async void TerminalOnTextEntryComplete(object sender, TextEntryCompleteArgs e)
         {
+            //fixme
             Host.HostUI.WriteLine("");
             IsExecuting = true;
             await ExecuteAsync(e.Text).ConfigureAwait(true);

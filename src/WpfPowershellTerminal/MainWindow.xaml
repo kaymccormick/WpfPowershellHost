@@ -478,7 +478,6 @@
       </StackPanel>
     </StackPanel>
     <StackPanel>
-
       <Glyphs
         FontUri="C:\windows\fonts\GILSANUB.TTF"
         FontRenderingEmSize="36"
@@ -493,9 +492,8 @@
                FontFamily="Gill Sans Ultra Bold"
                Foreground="White"
                Background="Transparent" Height="40" />
-    <StackPanel Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
+    <StackPanel Background="White" Visibility="Visible" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
       <StackPanel Orientation="Horizontal">
-        <TextBlock Margin="10" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold" />
         <StackPanel HorizontalAlignment="Center">
           <TextBlock Margin="10,0,10,0" FontSize="14" Text="FontSize" Foreground="Gray" />
           <TextBox Margin="10,0,0,0" Text="{Binding FontSize,Mode=TwoWay}" />
@@ -504,6 +502,14 @@
         <StackPanel>
           <TextBlock Margin="10,0,10,0" FontSize="14" Text="Columns" Foreground="Gray" />
           <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=NumColumns}" />
+        </StackPanel>
+        <StackPanel>
+          <TextBlock Margin="10,0,10,0" FontSize="14" Text="CellWidth" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CellWidth,StringFormat=N1}" />
+        </StackPanel>
+        <StackPanel>
+          <TextBlock Margin="10,0,10,0" FontSize="14" Text="CellHeight" Foreground="Gray" />
+          <TextBlock Margin="10,0,0,0" Text="{Binding ElementName=Terminal,Path=CellHeight,StringFormat=N1}" />
         </StackPanel>
 
         <StackPanel>
@@ -589,13 +595,16 @@
         <TextBlock Text="{Binding CharUnderCursor}" />
       </StackPanel>
     </StackPanel>
-    <wpfTerminalControlLib:WpfTerminalControl NumReservedColumns="0" FontSize="20" DiagnosticsEnabled="True"
-                                              ForegroundColor="Green"
-                                              Background="Black" FontWeight="Bold"
-                                              BackgroundColor="Black" AutoResize="True" Grid.Row="2"
-                                              CursorBrush="DarkOrange"
-                                              x:Name="Terminal" FontFamily="Lucida Console"
-                                              BorderBrush="Green" BorderThickness="1" Focusable="True" />
+    <Border Background="White" Grid.Row="2">
+      <wpfTerminalControlLib:WpfTerminalControl Grid.Row="2" NumReservedColumns="0" FontSize="20" DiagnosticsEnabled="True"
+                                              
+                                                ForegroundColor="Green"
+                                                FontWeight="Bold"
+                                                BackgroundColor="Black" AutoResize="True" 
+                                                CursorBrush="DarkOrange"
+                                                x:Name="Terminal" FontFamily="Lucida Console"
+                                                BorderBrush="Green" BorderThickness="1" Focusable="True" Margin="0,-2,0,2" />
+    </Border>
     <!-- ReSharper disable once Xaml.MissingGridIndex -->
     <wpfTerminalControlLib:WrappedPowerShell Visibility="Collapsed" x:Name="Shell" Terminal="{x:Reference Terminal}" />
     <wpfTerminalControlLib:WpfInputLine IsEnabled="False" LineMode="True" InputOnly="True" CursorBrush="Azure"

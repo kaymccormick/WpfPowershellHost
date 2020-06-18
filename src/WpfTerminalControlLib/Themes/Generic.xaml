@@ -50,7 +50,7 @@
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
-                  <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="20">
+                  <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="20" Stroke="Aqua" StrokeThickness="1">
                     <Rectangle.Fill>
                       <DrawingBrush AlignmentX="Left" AlignmentY="Bottom"
                                     Stretch="Fill"
@@ -72,14 +72,15 @@
                                     Stretch="Fill"
                                     Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
                         <DrawingBrush.Transform>
-                          <TransformGroup>
-                            <TranslateTransform X="00" Y="00" />
-                          </TransformGroup>
+                          <TranslateTransform x:Name="ColLabel2Transform" X="-20" Y="00" />
                         </DrawingBrush.Transform>
                         <DrawingBrush.Drawing>
                           <DrawingGroup x:Name="ColLabel2DrawingGroup">
                             <DrawingGroup.Transform>
+                              <TransformGroup>
                               <RotateTransform Angle="270" />
+
+                              </TransformGroup>
                             </DrawingGroup.Transform>
                           </DrawingGroup>
                         </DrawingBrush.Drawing>
@@ -134,17 +135,19 @@
                 </Grid>
               </Border>
               <ScrollBar Grid.Column="1" x:Name="VScrollBar" Orientation="Vertical" SmallChange="1" LargeChange="5" />
-              <Grid Grid.Column="2"
+              <Grid Grid.Column="2" Width="240"
                     Visibility="{Binding RelativeSource={RelativeSource TemplatedParent},Path=DiagnosticsEnabled, Converter={StaticResource B}}">
                 <Rectangle MinWidth="100" x:Name="MiniRect" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                   <Rectangle.Fill>
                     <DrawingBrush x:Name="MiniBrush" />
                   </Rectangle.Fill>
                 </Rectangle>
-                <Popup IsHitTestVisible="False" x:Name="Magnifier" Width="320" Height="240">
+                <Popup Placement="Mouse" IsHitTestVisible="False" x:Name="Magnifier" Width="320" Height="240">
                   <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Rectangle.Fill>
-                      <DrawingBrush x:Name="ZoomBrush" />
+                      <DrawingBrush x:Name="ZoomBrush" >
+                        <DrawingBrush.Transform><TranslateTransform X="50"></TranslateTransform></DrawingBrush.Transform>
+                      </DrawingBrush>
                     </Rectangle.Fill>
                   </Rectangle>
                 </Popup>

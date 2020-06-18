@@ -44,7 +44,7 @@ namespace WpfTerminalControlLib
             new PropertyMetadata(default(string), OnWindowTitleChanged));
 
         public static readonly DependencyProperty ViewXProperty = DependencyProperty.Register(
-            "ViewX", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewXChanged));
+            "ViewX", typeof(int), typeof(WpfTerminalControl), new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsRender, OnViewXChanged));
 
         public static readonly DependencyProperty ViewYProperty = DependencyProperty.Register(
             "ViewY", typeof(int), typeof(WpfTerminalControl), new PropertyMetadata(default(int), OnViewYChanged));
@@ -315,10 +315,11 @@ namespace WpfTerminalControlLib
             if (Translate != null)
             {
                 Translate.X = DrawingGroup.Bounds.Left;
-                Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
+                CalcTransY();
                 TranslateX = Translate.X;
                 TranslateY = Translate.Y;
             }
+
 
             _drawingContext = DrawingGroup.Append();
             Logger.Trace($"{DrawingGroup.Bounds}");
@@ -332,6 +333,11 @@ namespace WpfTerminalControlLib
             }
 
             return true;
+        }
+
+        private void CalcTransY()
+        {
+            Translate.Y = -1* ViewY * CellHeight;//-1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
         }
 #endif
 
@@ -367,7 +373,9 @@ namespace WpfTerminalControlLib
             Rect1 = (Rectangle) GetTemplateChild("Rect");
             Rect2 = (Rectangle) GetTemplateChild("Rect2");
             ColLabel = (Rectangle) GetTemplateChild("ColLabel");
-            DG0 = (DrawingGroup) GetTemplateChild("ColLabelDrawingGroup");
+            DG0 = (DrawingGroup) GetTemplateChild("ColLabel1DrawingGroup");
+            ColLabel2DrawingGroup = (DrawingGroup)GetTemplateChild("ColLabel2DrawingGroup");
+            ColLabel2Transform = (TranslateTransform) GetTemplateChild("ColLabel2Transform");
             DG2 = (DrawingGroup) GetTemplateChild("DG2");
 
 #if ROWDGMODE
@@ -378,6 +386,8 @@ namespace WpfTerminalControlLib
             CoerceValue(CursorRowProperty);
             UpdateStates(true);
         }
+
+        public TranslateTransform ColLabel2Transform { get; set; }
 
         private DrawingGroup DG0
         {
@@ -938,10 +948,58 @@ namespace WpfTerminalControlLib
                 }
             }
 
-
-            if (DG2 != null)
+            if (DG0 != null)
             {
-                var dc = DG2.Open();
+                var dc = DG0.Open();
+                var origin = new Point(0, 0);
+
+                var fontSize = FontSize * (xadvance / yadvance);
+                /* If font size computed relative to each individual line is too small (defined here as less than 16pt), increase font size
+                to 28pt. */
+                if (fontSize < 16) fontSize = 28;
+                var gli = _glyphTypeface.CharacterToGlyphMap['x'];
+                var xadvance1 = _glyphTypeface.AdvanceWidths[gli] * fontSize;
+                var yadvance1 = _glyphTypeface.AdvanceHeights[gli] * fontSize;
+
+                for (var i = 0; i < eNewValue; i++)
+                {
+                    var tt = new FormattedText(i.ToString(), CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                        Typeface, fontSize, Brushes.Black, _pixelsPerDip);
+                    tt.SetFontWeight(FontWeights.ExtraBold);
+                    dc.DrawText(tt, origin);
+
+                    //origin.X += tt.Width;
+
+
+                    if (yadvance1 > CellWidth)
+                    {
+                        var a = yadvance * 2;
+                        if (CellWidth * 2 - a < 5)
+                            origin.Y += a;
+                        else
+                            origin.Y += a + yadvance1;
+
+                        // while (a < CellWidth * 2)
+                        // {
+                        // a += 
+                        // }
+                        // while()
+                        // origin.Y += CellWidth / (yadvance );
+                        i++;
+                    }
+                    else
+                    {
+                        origin.Y += CellWidth;
+                    }
+                }
+
+                dc.Close();
+            }
+
+
+            if (ColLabel2DrawingGroup != null)
+            {
+                var dc = ColLabel2DrawingGroup.Open();
                 var origin = new Point(0, 0);
 
                 var fontSize = FontSize * (xadvance / yadvance);
@@ -991,6 +1049,8 @@ namespace WpfTerminalControlLib
             Logger.Info($"{width}");
             if (Rect1 != null) Rect1.Width = width;
         }
+
+        public DrawingGroup ColLabel2DrawingGroup { get; set; }
 
         public static readonly DependencyProperty RectWidthProperty = DependencyProperty.Register(
             "RectWidth", typeof(float), typeof(WpfTerminalControl),
@@ -1405,7 +1465,7 @@ namespace WpfTerminalControlLib
                 // Translate.Y = (NumRows * CellHeight - DrawingGroup.Bounds.Height)
                 
                 TranslateY = Translate.Y;
-                Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
+                CalcTransY();
                 _debug("View Y = " + newValue);
                 _debug("Translate y is " + Translate.Y);
             }
@@ -1496,9 +1556,18 @@ namespace WpfTerminalControlLib
 
         private void OnViewXChanged(int oldValue, int newValue)
         {
-            Translate.X = -1 * newValue * CellWidth + DrawingGroup.Bounds.Left;
+            if (DrawingGroup.Bounds.IsEmpty)
+            {
+                Translate.X = -1 * newValue * CellWidth;
+            }
+            else
+            {
+                Translate.X = -1 * newValue * CellWidth + DrawingGroup.Bounds.Left;
+            }
+
             // Translate.X = DrawingGroup.Bounds.Left - (newValue - VisibleRowCount) * xadvance;
             TranslateX = Translate.X;
+            ColLabel2Transform.X = Translate.X;
 
             // if (_brush != null)
             // {
@@ -1586,6 +1655,7 @@ namespace WpfTerminalControlLib
         {
             foreach (var ch in eText)
             {
+                //fixme
                 SetCellCharacter(CursorRow, CursorColumn, ch, ConsoleColor.Black, ConsoleColor.White, true, false);
                 CursorColumn++;
 
@@ -1735,9 +1805,11 @@ namespace WpfTerminalControlLib
         {
             base.OnRender(drawingContext);
             var p = Rect1.TranslatePoint(new Point(0, 0), this);
+            var rectangle = new Rect((CursorColumn - ViewX) * xadvance + p.X, p.Y + (CursorRow - ViewY) * yadvance, xadvance,
+                yadvance);
+            Debug.WriteLine(rectangle);
             drawingContext.DrawRectangle(CursorBrush, null,
-                new Rect((CursorColumn - ViewX) * xadvance + p.X, p.Y + (CursorRow - ViewY) * yadvance, xadvance,
-                    yadvance));
+                rectangle);
         }
 
         private int BufferRowCount { get; set; }
@@ -2191,7 +2263,8 @@ AddRowsToBuffer(CursorRow + 1);
             if (Translate != null)
             {
                 Translate.X = DrawingGroup.Bounds.Left;
-                Translate.Y = -1 * NumRows * CellHeight + DrawingGroup.Bounds.Bottom;
+                // 0 until end
+             CalcTransY();
                 //Translate.Y = DrawingGroup.Bounds.Bottom;
                 TranslateX = Translate.X;
                 TranslateY = Translate.Y;

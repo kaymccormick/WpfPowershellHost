@@ -127,6 +127,10 @@ namespace WpfPowerShellTerminal
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
+            if (e.Key == Key.LeftAlt)
+            {
+
+            }
             if (e.Key == Key.LeftShift )
             {
                 if (_popup == null)
