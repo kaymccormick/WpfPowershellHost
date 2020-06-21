@@ -127,13 +127,14 @@ namespace WpfPowerShellTerminal
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
-            if (e.Key == Key.LeftAlt)
-            {
+            switch (e.Key)
 
-            }
-            if (e.Key == Key.LeftShift )
             {
-                if (_popup == null)
+                case Key.LeftAlt:
+                    Debug1.Visibility = Visibility.Visible;
+                    e.Handled = true;
+                    break;
+                case Key.LeftShift when _popup == null:
                 {
                     _popup = new Popup();
                     Border b = new Border()
@@ -157,12 +158,12 @@ namespace WpfPowerShellTerminal
                     _popup.PlacementTarget = Input;
                     _popup.Placement = PlacementMode.Top;
                     _popup.IsOpen = true;
+                    break;
                 }
-                else
-                {
+                case Key.LeftShift:
                     _popup.IsOpen = false;
                     _popup = null;
-                }
+                    break;
             }
             if ((e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {

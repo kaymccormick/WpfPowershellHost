@@ -57,20 +57,20 @@ namespace WpfApp4
             };
             Terminal.DebugCb = DebugCb;
             Terminal.ExecuteCommandComplete += TerminalOnExecuteCommandComplete;
-            if (Shell.InitialSessionState != null)
-            {
-                Shell.InitialSessionState.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
-                    ""));
-            }
+            // if (Shell.InitialSessionState != null)
+            // {
+                // Shell.InitialSessionState.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
+                    // ""));
+            // }
 
-            Shell.InitialSessionStateChanged += (sender, args) =>
-            {
-                if (args.NewValue != null)
-                    args.NewValue.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
-                        ""));
-            };
-            Shell.CoerceValue(WrappedPowerShell.InitialSessionStateProperty);
-            Shell.CoerceValue(WrappedPowerShell.RunspaceProperty);
+            // Shell.InitialSessionStateChanged += (sender, args) =>
+            // {
+                // if (args.NewValue != null)
+                    // args.NewValue.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
+                        // ""));
+            // };
+            // Shell.CoerceValue(WrappedPowerShell.InitialSessionStateProperty);
+            // Shell.CoerceValue(WrappedPowerShell.RunspaceProperty);
 
             Input.TextEntryComplete += OnInputOnTextEntryComplete;
             // Te???rminal.TextEntryComplete += (object sender, TextEntryCompleteArgs args) =>
@@ -112,18 +112,19 @@ namespace WpfApp4
         private async void OnInputOnTextEntryComplete(object sender, TextEntryCompleteArgs args)
         {
             Debug.WriteLine(args.Text);
-            IsExecuting = true;
-            Debug.WriteLine("Calling executeasync");
+            // IsExecuting = true;
+            // Debug.WriteLine("Calling executeasync");
 
-            await Shell.ExecuteAsync(args.Text).ConfigureAwait(true);
-            Debug.WriteLine("Back from execute2");
-            TerminalOnExecuteCommandComplete(null, null);
-            IsExecuting = false;
+            // await Shell.ExecuteAsync(args.Text).ConfigureAwait(true);
+            // Debug.WriteLine("Back from execute2");
+            // TerminalOnExecuteCommandComplete(null, null);
+            // IsExecuting = false;
 
         }
 
         private void DebugCb(string obj)
         {
+            Console.WriteLine(obj);
             Debug.WriteLine(obj);
             Trace.WriteLine(obj);
             Logger.Debug(obj);

@@ -49,8 +49,9 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
+
                   <Rectangle Grid.Row="0" x:Name="ColLabel" HorizontalAlignment="Stretch" Height="40" Stroke="Aqua" StrokeThickness="1">
-                    <Rectangle.Fill>
+                      <Rectangle.Fill>
                       <DrawingBrush AlignmentX="Left" AlignmentY="Bottom"
                                     Stretch="Fill"
                                     Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">

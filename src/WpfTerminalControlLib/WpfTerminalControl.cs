@@ -410,11 +410,15 @@ namespace WpfTerminalControlLib
 
             Rect2 = (Rectangle) GetTemplateChild("Rect2");
             ColLabel = (Rectangle) GetTemplateChild("ColLabel");
+
           
             ColLabel2 = (Rectangle)GetTemplateChild("ColLabel2");
             DG0 = (DrawingGroup) GetTemplateChild("ColLabel1DrawingGroup");
             ColLabel2DrawingGroup = (DrawingGroup)GetTemplateChild("ColLabel2DrawingGroup");
             ColLabel2Transform = (TranslateTransform) GetTemplateChild("ColLabel2Transform");
+
+            DG0 = (DrawingGroup) GetTemplateChild("ColLabel1DrawingGroup");
+
             DG2 = (DrawingGroup) GetTemplateChild("DG2");
 
 
@@ -770,7 +774,7 @@ namespace WpfTerminalControlLib
 
         public static readonly DependencyProperty NumReservedColumnsProperty = DependencyProperty.Register(
             "NumReservedColumns", typeof(int), typeof(WpfTerminalControl),
-            new PropertyMetadata(5, OnNumReservedColumnsChanged));
+            new PropertyMetadata(0, OnNumReservedColumnsChanged));
 
         public int NumReservedColumns
         {
@@ -911,8 +915,8 @@ namespace WpfTerminalControlLib
         {
             // var ev = new RoutedPropertyChangedEventArgs<int>(eOldValue, eNewValue, NumRowsChangedEvent);
             // RaiseEvent(ev);
-
-            Logger.Debug($"NumRows = {eNewValue} ");
+            
+            _debug($"NumRows = {eNewValue} ");
             if (eNewValue == -1) return;
 
             if (NumColumns != -1)
@@ -1518,7 +1522,9 @@ namespace WpfTerminalControlLib
             {
                 ViewY = newValue - NumRows + 1;
             }
-            Debug.WriteLine("Row: " + newValue);
+
+            Debug.WriteLine("new Row: " + newValue);
+
             CharUnderCursor = newValue < NumRows ? GetCharUnderCursor(newValue, CursorColumn) : '\0';
         }
 

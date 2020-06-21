@@ -595,7 +595,6 @@
                                               x:Name="Terminal" FontFamily="Lucida Console"
                                               BorderBrush="Green" BorderThickness="1" Focusable="True" />
     <!-- ReSharper disable once Xaml.MissingGridIndex -->
-    <wpfTerminalControlLib:WrappedPowerShell Visibility="Collapsed" x:Name="Shell" Terminal="{x:Reference Terminal}" />
     <wpfTerminalControlLib:WpfInputLine IsEnabled="False" LineMode="True" InputOnly="True" CursorBrush="Azure"
                                         x:Name="Input" BorderBrush="Red" Visibility="Collapsed"
                                         BorderThickness="1" AutoResize="True" Grid.Row="3" Focusable="True">
