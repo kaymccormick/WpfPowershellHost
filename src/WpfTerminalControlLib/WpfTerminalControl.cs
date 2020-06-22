@@ -1303,7 +1303,7 @@ namespace WpfTerminalControlLib
         private void _debug(string s)
         {
             DebugCb?.Invoke(s);
-            Debug.WriteLine(s);
+            // Debug.WriteLine(s);
             Logger.Debug(s);
         }
 
