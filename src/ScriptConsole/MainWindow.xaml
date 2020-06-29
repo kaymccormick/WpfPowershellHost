@@ -1,0 +1,13 @@
+﻿<Window x:Class="ScriptConsole.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScriptConsole"
+        xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+<wpfTerminalControlLib:WpfTerminalControl  CursorBrush="BlueViolet" x:Name="term"  FontSize="24" TextEntryComplete="WpfTerminalControl_OnTextEntryComplete"/>
+    </Grid>
+</Window>

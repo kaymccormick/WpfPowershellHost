@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTestApp", "Test\WpfTestA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerminalTest", "Test\TerminalTest\TerminalTest.csproj", "{EA9FDC77-2DA6-45E1-A060-51AF87994CA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfTerminalAddon", "WpfTerminalAddon\WpfTerminalAddon.csproj", "{D4E10430-7DB5-4108-8AD9-C95040EEFB23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTerminalAddon", "WpfTerminalAddon\WpfTerminalAddon.csproj", "{D4E10430-7DB5-4108-8AD9-C95040EEFB23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPowershellTerminal", "WpfPowershellTerminal\WpfPowershellTerminal.csproj", "{B14B7803-8853-443B-B466-9EF2B51853F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfPowershellTerminal", "WpfPowershellTerminal\WpfPowershellTerminal.csproj", "{B14B7803-8853-443B-B466-9EF2B51853F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptConsole", "ScriptConsole\ScriptConsole.csproj", "{C55053A5-58FA-4906-87EB-F8ACBD39532F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{B14B7803-8853-443B-B466-9EF2B51853F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B14B7803-8853-443B-B466-9EF2B51853F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B14B7803-8853-443B-B466-9EF2B51853F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C55053A5-58FA-4906-87EB-F8ACBD39532F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55053A5-58FA-4906-87EB-F8ACBD39532F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55053A5-58FA-4906-87EB-F8ACBD39532F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55053A5-58FA-4906-87EB-F8ACBD39532F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

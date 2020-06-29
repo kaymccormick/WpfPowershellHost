@@ -713,12 +713,12 @@ namespace WpfTerminalControlLib
         private void CommonInit()
         {
             var fontSize = FontSize;
-            var gli = _glyphTypeface.CharacterToGlyphMap['p'];
+            var gli = _glyphTypeface.CharacterToGlyphMap['x'];
             yadvance = _glyphTypeface.AdvanceHeights[gli] * fontSize;
             xadvance = _glyphTypeface.AdvanceWidths[gli] * fontSize;
             _yd2 = _glyphTypeface.DistancesFromHorizontalBaselineToBlackBoxBottom[gli] * fontSize;
 
-            CellHeight = yadvance;
+            CellHeight = FontFamily.LineSpacing * fontSize;
             CellWidth = xadvance;
 
             if (Brush1 != null) Brush1.Drawing = DrawingGroup;
@@ -834,15 +834,16 @@ namespace WpfTerminalControlLib
         {
             Logger.Info(nameof(OnFontFamilyChanged));
             Typeface = new Typeface(eNewValue, FontStyle, FontWeight, FontStretch);
-
+            
             if (!Typeface.TryGetGlyphTypeface(out _glyphTypeface))
                 throw new InvalidControlState("Unable to get glyph typeface");
             var fontSize = FontSize;
             var gli = _glyphTypeface.CharacterToGlyphMap['p'];
             yadvance = _glyphTypeface.AdvanceHeights[gli] * fontSize;
             xadvance = _glyphTypeface.AdvanceWidths[gli] * fontSize;
+            
             _yd2 = _glyphTypeface.DistancesFromHorizontalBaselineToBlackBoxBottom[gli] * fontSize;
-            CellHeight = yadvance;
+            CellHeight = yadvance + _yd2;
             CellWidth = xadvance;
 #if ROWDGMODE
             if (NumRows > 0 && NumColumns > 0)
@@ -1156,7 +1157,8 @@ namespace WpfTerminalControlLib
         {
             var gli = _glyphTypeface.CharacterToGlyphMap['x'];
             xadvance = CellWidth = _glyphTypeface.AdvanceWidths[gli] * newValue;
-            yadvance = CellHeight = _glyphTypeface.AdvanceHeights[gli] * newValue;
+            yadvance =  _glyphTypeface.AdvanceHeights[gli] * newValue;
+            CellHeight = FontFamily.LineSpacing * newValue;
 
             _yd2 = _glyphTypeface.DistancesFromHorizontalBaselineToBlackBoxBottom[gli] * newValue;
             if (Brush2 != null)
@@ -1879,8 +1881,9 @@ namespace WpfTerminalControlLib
         {
             base.OnRender(drawingContext);
             var p = Rect1.TranslatePoint(new Point(0, 0), this);
-            var rectangle = new Rect((CursorColumn - ViewX) * xadvance + p.X, p.Y + (CursorRow - ViewY) * yadvance, xadvance,
-                yadvance);
+            var rectangle = new Rect((CursorColumn - ViewX) * xadvance + p.X,
+                p.Y + (CursorRow - ViewY) * CellHeight, xadvance,
+                CellHeight);
             Debug.WriteLine(rectangle);
             drawingContext.DrawRectangle(CursorBrush, null,
                 rectangle);
@@ -2338,8 +2341,8 @@ AddRowsToBuffer(CursorRow + 1);
             }
 
 
-            Brush1.Drawing = DrawingGroup;
-            InvalidateVisual();
+            // Brush1.Drawing = DrawingGroup;
+            // InvalidateVisual();
             var message =
                 $"( {DrawingGroup.Bounds.X:N2}, {DrawingGroup.Bounds.Y:N2} ) - ({DrawingGroup.Bounds.Right:N2}, {DrawingGroup.Bounds.Bottom:N2} )";
             Debug.WriteLine(message);
