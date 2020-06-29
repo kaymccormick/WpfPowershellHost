@@ -77,7 +77,7 @@ namespace PowerShellShared
 
         private void TerminalInterfaceOnNumRowsChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
         {
-            if (numCols.HasValue && e.NewValue != -1 && numCols.Value >=0)
+            if (numCols.HasValue && e.NewValue < 0 && numCols.Value >=0)
                 buf = new ConsoleBuffer
                     {Buf = NewBufferCellArray(new Size(numCols.Value, e.NewValue), new BufferCell())};
             numRows = e.NewValue;
