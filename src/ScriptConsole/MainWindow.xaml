@@ -7,7 +7,13 @@
         xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.CommandBindings>
+        <CommandBinding Command="local:MainWindow.DefaultResizeCommand" Executed="CommandBinding_OnExecuted"></CommandBinding></Window.CommandBindings>
     <Grid>
-<wpfTerminalControlLib:WpfTerminalControl  CursorBrush="BlueViolet" x:Name="term"  FontSize="24" TextEntryComplete="WpfTerminalControl_OnTextEntryComplete"/>
+<wpfTerminalControlLib:WpfTerminalControl  CursorBrush="BlueViolet" x:Name="term"  FontSize="24" TextEntryComplete="WpfTerminalControl_OnTextEntryComplete">
+    <wpfTerminalControlLib:WpfTerminalControl.InputBindings>
+        <KeyBinding Key="Escape" Command="local:MainWindow.DefaultResizeCommand"></KeyBinding>
+    </wpfTerminalControlLib:WpfTerminalControl.InputBindings>
+</wpfTerminalControlLib:WpfTerminalControl>
     </Grid>
 </Window>

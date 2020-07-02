@@ -10,7 +10,7 @@
         xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
         mc:Ignorable="d"
         Loaded="MainWindow_OnLoaded"
-        Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="900" Width="1200">
+        Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="600" Width="800">
   <WindowChrome.WindowChrome>
     <WindowChrome CaptionHeight="60" />
   </WindowChrome.WindowChrome>
@@ -598,14 +598,14 @@
       </StackPanel>
     </StackPanel>
     <Border Background="White"  Grid.Row="2" BorderBrush="DarkOrange" BorderThickness="2">
-      <wpfTerminalControlLib:WpfTerminalControl  NumReservedColumns="0" FontSize="20" DiagnosticsEnabled="False"
+      <wpfTerminalControlLib:WpfTerminalControl  NumReservedColumns="0" FontSize="18" DiagnosticsEnabled="False"
                                               
-                                                ForegroundColor="Green"
+                                                ForegroundColor="Black"
                                                 FontWeight="Bold"
                                                 BackgroundColor="Black" AutoResize="True" 
                                                 
                                                 CursorBrush="DarkOrange"
-                                                x:Name="Terminal" FontFamily="Lucida Console"
+                                                x:Name="Terminal" FontFamily="Arial"
                                                 BorderBrush="Green" BorderThickness="3" Focusable="True" />
     </Border>
     <!-- ReSharper disable once Xaml.MissingGridIndex -->

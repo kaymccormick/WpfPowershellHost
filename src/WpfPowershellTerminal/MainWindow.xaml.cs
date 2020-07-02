@@ -131,7 +131,7 @@ namespace WpfPowerShellTerminal
 
             {
                 case Key.LeftAlt:
-                    Debug1.Visibility = Visibility.Visible;
+                    // Debug1.Visibility = Visibility.Visible;
                     e.Handled = true;
                     break;
                 case Key.LeftShift when _popup == null:
