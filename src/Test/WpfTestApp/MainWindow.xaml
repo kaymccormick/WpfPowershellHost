@@ -4,13 +4,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         WindowStyle="None"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        FontSize="20"
+        FontSize="16"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
         mc:Ignorable="d"
         Loaded="MainWindow_OnLoaded"
-        Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="900" Width="1200">
+        Title="{Binding ElementName=Terminal,Path=WindowTitle}" Height="600" Width="800">
   <WindowChrome.WindowChrome><WindowChrome CaptionHeight="60"/></WindowChrome.WindowChrome>
   <Window.Resources>
     <Style x:Key="FocusVisual">
@@ -491,7 +491,7 @@
     <TextBlock VerticalAlignment="Center"  Grid.Row="0" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold"
                Foreground="White"
                Background="Transparent" Height="40" />
-    <StackPanel Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
+    <StackPanel Visibility="Visible" Background="White" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="10" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold" />
         <StackPanel HorizontalAlignment="Center">
@@ -587,10 +587,10 @@
         <TextBlock Text="{Binding CharUnderCursor}" />
       </StackPanel>
     </StackPanel>
-    <wpfTerminalControlLib:WpfTerminalControl NumReservedColumns="0" FontSize="20" DiagnosticsEnabled="True" ForegroundColor="Green"
-                                              Background="Black" FontWeight="Bold"
+    <wpfTerminalControlLib:WpfTerminalControl NumReservedColumns="0" FontSize="16" DiagnosticsEnabled="True" ForegroundColor="Black"
+                                              Background="White" FontWeight="Bold"
                                               NumRows="10"
-                                              BackgroundColor="Black" AutoResize="False" Grid.Row="2"
+                                              BackgroundColor="White" AutoResize="False" Grid.Row="2"
                                               CursorBrush="DarkOrange"
                                               x:Name="Terminal" FontFamily="Lucida Console"
                                               BorderBrush="Green" BorderThickness="1" Focusable="True" />
@@ -605,7 +605,7 @@
         <KeyBinding Key="V" Modifiers="Control" Command="Paste" />
       </wpfTerminalControlLib:WpfInputLine.InputBindings>
     </wpfTerminalControlLib:WpfInputLine>
-    <StackPanel Orientation="Horizontal" Grid.Row="4" DataContext="{Binding ElementName=Input}" Grid.ColumnSpan="2" Visibility="Collapsed">
+    <StackPanel Background="White" Orientation="Horizontal" Grid.Row="4" DataContext="{Binding ElementName=Input}" Grid.ColumnSpan="2" Visibility="Visible">
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="10" Text="Input" />
         <StackPanel>

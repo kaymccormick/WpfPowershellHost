@@ -605,7 +605,7 @@
                                                 BackgroundColor="Black" AutoResize="True" 
                                                 
                                                 CursorBrush="DarkOrange"
-                                                x:Name="Terminal" FontFamily="Arial"
+                                                x:Name="Terminal" FontFamily="Lucida Console"
                                                 BorderBrush="Green" BorderThickness="3" Focusable="True" />
     </Border>
     <!-- ReSharper disable once Xaml.MissingGridIndex -->

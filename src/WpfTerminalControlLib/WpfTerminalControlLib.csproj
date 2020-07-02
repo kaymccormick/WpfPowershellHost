@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net472;net5.0</TargetFrameworks>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
@@ -12,10 +12,17 @@
     </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Microsoft.PowerShell.ConsoleHost" Version="7.0.1" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.1" />
-    <PackageReference Include="Microsoft.PowerShell.Security" Version="7.0.1" />
-    <PackageReference Include="System.Management.Automation" Version="7.0.1" />
+    <PackageReference Include="Microsoft.PowerShell.ConsoleHost" Version="7.0.2" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.2" />
+    <PackageReference Include="Microsoft.PowerShell.Security" Version="7.0.2" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.PowerShell.ConsoleHost" Version="7.1.0-preview.3" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.0-preview.3" />
+    <PackageReference Include="Microsoft.PowerShell.Security" Version="7.1.0-preview.3" />
+    <PackageReference Include="System.Management.Automation" Version="7.1.0-preview.3" />
 
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies">
+      <Version>1.1.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="Microsoft.PowerShell.ConsoleHost" Version="7.0.1" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.1" />
+    <PackageReference Include="Microsoft.PowerShell.Security" Version="7.0.1" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetProjects.PdfSharp" Version="2.0.5" />
+    <PackageReference Include="GreenPipes" Version="4.0.0-develop.142" />
+    <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="SSH.NET" Version="2020.0.0-beta1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfTerminalControlLib\WpfTerminalControlLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\greenpipes\4.0.0-develop.142\lib\netstandard2.0\GreenPipes.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\jetbrains.annotations\2020.1.0\lib\net20\JetBrains.Annotations.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\microsoft.bcl.asyncinterfaces\1.1.1\ref\net461\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\nlog\4.7.2\lib\net45\NLog.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\dotnetprojects.pdfsharp\2.0.5\lib\net40\PdfSharp.Charting.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\dotnetprojects.pdfsharp\2.0.5\lib\net40\PdfSharp.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\dotnetprojects.pdfsharp\2.0.5\lib\net40\PdfSharp.Xps.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\ssh.net\2020.0.0-beta1\lib\net40\Renci.SshNet.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.FileSystem.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\microsoft.powershell.5.referenceassemblies\1.1.0\lib\net4\System.Management.Automation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Management.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Numerics.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\system.runtime.compilerservices.unsafe\4.5.3\ref\net461\System.Runtime.CompilerServices.Unsafe.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Runtime.Serialization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ServiceModel.dll" />
+    <ReferencePath Include="C:\Users\jade\.nuget\packages\system.threading.tasks.extensions\4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Transactions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Controls.Ribbon.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationClient.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationClientsideProviders.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationProvider.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationTypes.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
+    <ReferencePath Include="C:\Users\jade\source\repos\wpfpowershellhost\src\WpfTerminalControlLib\bin\Release\net472\WpfTerminalControlLib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\netstandard.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\ConsoleWindow.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\MainWindow.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\MainWindow2.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\TerminalControl2.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\TerminalWindow2.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\UserControl1.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\UserTerminal1.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\App.g.cs" />
+    <Compile Include="C:\Users\jade\source\repos\wpfpowershellhost\src\Test\WpfTestApp\obj\Release\net472\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+</Project>
